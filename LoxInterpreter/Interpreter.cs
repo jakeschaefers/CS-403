@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LoxInterpreter
 {
@@ -17,43 +18,20 @@ namespace LoxInterpreter
             }
         }
 
-        public object VisitBinaryExpr(Expr.Binary expr)
+        private string Stringify(object obj)
         {
-            object left = Evaluate(expr.Left);
-            object right = Evaluate(expr.Right);
+            if (obj == null) return "nil";
 
-            switch (expr.Operator.Type)
+            if (obj is double)
             {
-                case TokenType.MINUS:
-                    CheckNumberOperands(expr.Operator, left, right);
-                    return (double)left - (double)right;
-                case TokenType.SLASH:
-                    CheckNumberOperands(expr.Operator, left, right);
-                    return (double)left / (double)right;
-                case TokenType.STAR:
-                    CheckNumberOperands(expr.Operator, left, right);
-                    return (double)left * (double)right;
-                case TokenType.PLUS:
-                    if (left is double && right is double)
-                    {
-                        return (double)left + (double)right;
-                    }
-
-                    if (left is string && right is string)
-                    {
-                        return (string)left + (string)right;
-                    }
-
-                    throw new RuntimeError(expr.Operator, "Operands must be two numbers or two strings.");
-                    // Add other cases for binary operators
-                default:
-                    return null;
+                string text = obj.ToString();
+                if (text.EndsWith(".0"))
+                {
+                    text = text.Substring(0, text.Length - 2);
+                }
+                return text;
             }
-        }
-
-        public object VisitGroupingExpr(Expr.Grouping expr)
-        {
-            return Evaluate(expr.Expression);
+            return obj.ToString();
         }
 
         public object VisitLiteralExpr(Expr.Literal expr)
@@ -67,38 +45,22 @@ namespace LoxInterpreter
 
             switch (expr.Operator.Type)
             {
+                case TokenType.BANG:
+                    return !IsTruthy(right);
                 case TokenType.MINUS:
                     CheckNumberOperand(expr.Operator, right);
                     return -(double)right;
-                case TokenType.BANG:
-                    return !IsTruthy(right);
+                default:
+                    throw new RuntimeError(expr.Operator, "Unsupported unary operator.");
             }
-
-            // Unreachable.
+            // Unreachable, but need it or throws error
             return null;
         }
 
-        public object Evaluate(Expr expr)
+        private void CheckNumberOperand(Token oper, object operand)
         {
-            return expr.Accept(this);
-        }
-
-        private string Stringify(object obj)
-        {
-            if (obj == null) return "nil";
-
-            // Special handling for double to remove unnecessary .0
-            if (obj is double)
-            {
-                string text = obj.ToString();
-                if (text.EndsWith(".0"))
-                {
-                    text = text.Substring(0, text.Length - 2);
-                }
-                return text;
-            }
-
-            return obj.ToString();
+            if (operand is double) return;
+            throw new RuntimeError(oper, "Operand must be a number.");
         }
 
         private bool IsTruthy(object obj)
@@ -108,28 +70,79 @@ namespace LoxInterpreter
             return true;
         }
 
-        private void CheckNumberOperand(Token operatorToken, object operand)
+        private bool IsEqual(object a, object b)
         {
-            if (operand is double) return;
-            throw new RuntimeError(operatorToken, "Operand must be a number.");
+            if (a == null && b == null) return true;
+            if (a == null) return false;
+
+            return a.Equals(b);
         }
 
-        private void CheckNumberOperands(Token operatorToken, object left, object right)
+        public object VisitGroupingExpr(Expr.Grouping expr)
+        {
+            return Evaluate(expr.Expression);
+        }
+
+        private object Evaluate(Expr expr)
+        {
+            return expr.Accept(this);
+        }
+
+        public object VisitBinaryExpr(Expr.Binary expr)
+        {
+            object left = Evaluate(expr.Left);
+            object right = Evaluate(expr.Right);
+
+            switch (expr.Operator.Type)
+            {
+                case TokenType.GREATER:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left > (double)right;
+                case TokenType.GREATER_EQUAL:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left >= (double)right;
+                case TokenType.LESS:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left < (double)right;
+                case TokenType.LESS_EQUAL:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left <= (double)right;
+                case TokenType.MINUS:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left - (double)right;
+                case TokenType.PLUS:
+                    if (left is double && right is double)
+                    {
+                        return (double)left + (double)right;
+                    }
+
+                    if (left is string && right is string)
+                    {
+                        return (string)left + (string)right;
+                    }
+
+                    throw new RuntimeError(expr.Operator, "Operands must be two numbers or two strings.");
+                case TokenType.SLASH:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left / (double)right;
+                case TokenType.STAR:
+                    CheckNumberOperands(expr.Operator, left, right);
+                    return (double)left * (double)right;
+                case TokenType.BANG_EQUAL:
+                    return !IsEqual(left, right);
+                case TokenType.EQUAL_EQUAL:
+                    return IsEqual(left, right);
+                default:
+                    throw new RuntimeError(expr.Operator, "Unsupported binary operator.");
+            }
+            // Unreachable, but need it or throws error
+            return null;
+        }
+
+        private void CheckNumberOperands(Token oper, object left, object right)
         {
             if (left is double && right is double) return;
-            throw new RuntimeError(operatorToken, "Operands must be numbers.");
+            throw new RuntimeError(oper, "Operands must be numbers.");
         }
-
-        // Nested RuntimeError class
-        public class RuntimeError : Exception
-        {
-            public Token Token { get; private set; }
-
-            public RuntimeError(Token token, string message) : base(message)
-            {
-                Token = token;
-            }
-        }
-
     }
 }

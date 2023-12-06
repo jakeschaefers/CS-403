@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+
 namespace LoxInterpreter
 {
     abstract class Expr
@@ -81,4 +87,5 @@ namespace LoxInterpreter
 
         // Add other expression subclasses here...
     }
+
 }

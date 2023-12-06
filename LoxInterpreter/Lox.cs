@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -6,7 +8,8 @@ namespace LoxInterpreter
 {
     class Lox
     {
-        private static Interpreter interpreter = new Interpreter();
+        private static readonly Interpreter interpreter = new Interpreter();
+
         private static bool hadError = false;
         private static bool hadRuntimeError = false;
 
@@ -40,6 +43,8 @@ namespace LoxInterpreter
             Run(Encoding.Default.GetString(bytes));
 
             if (hadError) Environment.Exit(65);
+            if (hadRuntimeError) Environment.Exit(70);
+
         }
 
         private static void RunPrompt()
@@ -67,12 +72,18 @@ namespace LoxInterpreter
             // Stop if there was a syntax error.
             if (hadError) return;
 
-            dynamic result = interpreter.Evaluate(expression);
+            interpreter.Interpret(expression);
         }
 
         public static void Error(int line, string message)
         {
             Report(line, "", message);
+        }
+
+        private static void Report(int line, string where, string message)
+        {
+            Console.Error.WriteLine($"[line {line}] Error{where}: {message}");
+            hadError = true;
         }
 
         public static void Error(Token token, string message)
@@ -87,17 +98,10 @@ namespace LoxInterpreter
             }
         }
 
-        public static void RuntimeError(Interpreter.RuntimeError error)
+        public static void RuntimeError(RuntimeError error)
         {
             Console.Error.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
             hadRuntimeError = true;
         }
-
-        private static void Report(int line, string where, string message)
-        {
-            Console.Error.WriteLine($"[line {line}] Error{where}: {message}");
-            hadError = true;
-        }
-        
     }
 }

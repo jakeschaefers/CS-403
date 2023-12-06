@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace LoxInterpreter
@@ -46,4 +50,5 @@ namespace LoxInterpreter
             return expr.Accept(this);
         }
     }
+
 }

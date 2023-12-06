@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+
 namespace LoxInterpreter
 {
     class Token
@@ -20,4 +26,5 @@ namespace LoxInterpreter
             return $"{Type} {Lexeme} {Literal}";
         }
     }
+
 }

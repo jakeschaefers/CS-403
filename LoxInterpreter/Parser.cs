@@ -8,6 +8,11 @@ namespace LoxInterpreter
         private readonly List<Token> tokens;
         private int current = 0;
 
+        class ParseError : Exception
+        {
+            public ParseError(string message) : base(message) { }
+        }
+
         public Parser(List<Token> tokens)
         {
             this.tokens = tokens;
@@ -19,7 +24,7 @@ namespace LoxInterpreter
             {
                 return Expression();
             }
-            catch (ParseErrorException)
+            catch (ParseError)
             {
                 return null;
             }
@@ -48,8 +53,7 @@ namespace LoxInterpreter
         {
             Expr expr = Term();
 
-            while (Match(TokenType.GREATER, TokenType.GREATER_EQUAL,
-                         TokenType.LESS, TokenType.LESS_EQUAL))
+            while (Match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL))
             {
                 Token operatorToken = Previous();
                 Expr right = Term();
@@ -117,12 +121,12 @@ namespace LoxInterpreter
                 return new Expr.Grouping(expr);
             }
 
-            throw new ParseErrorException("Expect expression.");
+            throw Error(Peek(), "Expect expression.");
         }
 
         private bool Match(params TokenType[] types)
         {
-            foreach (var type in types)
+            foreach (TokenType type in types)
             {
                 if (Check(type))
                 {
@@ -133,7 +137,13 @@ namespace LoxInterpreter
 
             return false;
         }
-
+        
+        private Token Consume(TokenType type, string message)
+        {
+            if (Check(type)) return Advance();
+            throw Error(Peek(), message);
+        }
+        
         private bool Check(TokenType type)
         {
             if (IsAtEnd()) return false;
@@ -161,17 +171,37 @@ namespace LoxInterpreter
             return tokens[current - 1];
         }
 
-        private void Consume(TokenType type, string message)
+        private ParseError Error(Token token, string message)
         {
-            if (Check(type))
-                Advance();
-            else
-                throw new ParseErrorException(message);
+            Lox.Error(token, message);
+            return new ParseError(message);
         }
 
-        private class ParseErrorException : Exception
+        private void Synchronize()
         {
-            public ParseErrorException(string message) : base(message) { }
+            Advance();
+
+            while (!IsAtEnd())
+            {
+                if (Previous().Type == TokenType.SEMICOLON) return;
+
+                switch (Peek().Type)
+                {
+                    case TokenType.CLASS:
+                    case TokenType.FUN:
+                    case TokenType.VAR:
+                    case TokenType.FOR:
+                    case TokenType.IF:
+                    case TokenType.WHILE:
+                    case TokenType.PRINT:
+                    case TokenType.RETURN:
+                        return;
+                }
+
+                Advance();
+            }
         }
+
     }
+
 }
