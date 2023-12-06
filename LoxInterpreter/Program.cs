@@ -12,6 +12,18 @@ namespace LoxInterpreter
 
         static void Main(string[] args)
         {
+
+            Expr expression = new Expr.Binary(
+                new Expr.Unary(
+                    new Token(TokenType.MINUS, "-", null, 1),
+                    new Expr.Literal(123)),
+                new Token(TokenType.STAR, "*", null, 1),
+                new Expr.Grouping(
+                    new Expr.Literal(45.67)));
+
+            AstPrinter printer = new AstPrinter();
+            Console.WriteLine(printer.Print(expression));
+
             try
             {
                 if (args.Length > 1)
@@ -32,6 +44,8 @@ namespace LoxInterpreter
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
+
+            
         }
 
         private static void RunFile(string path)
@@ -329,4 +343,132 @@ namespace LoxInterpreter
 
         EOF
     }
+
+    abstract class Expr
+    {
+        public interface Visitor<R>
+        {
+            R VisitBinaryExpr(Binary expr);
+            R VisitGroupingExpr(Grouping expr);
+            R VisitLiteralExpr(Literal expr);
+            R VisitUnaryExpr(Unary expr);
+            // Add other Visit methods for additional expression types
+        }
+
+        public abstract R Accept<R>(Visitor<R> visitor);
+
+        public class Binary : Expr
+        {
+            public Expr Left { get; }
+            public Token Operator { get; }
+            public Expr Right { get; }
+
+            public Binary(Expr left, Token operatorToken, Expr right)
+            {
+                Left = left;
+                Operator = operatorToken;
+                Right = right;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitBinaryExpr(this);
+            }
+        }
+
+        public class Grouping : Expr
+        {
+            public Expr Expression { get; }
+
+            public Grouping(Expr expression)
+            {
+                Expression = expression;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitGroupingExpr(this);
+            }
+        }
+
+        public class Literal : Expr
+        {
+            public object Value { get; }
+
+            public Literal(object value)
+            {
+                Value = value;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitLiteralExpr(this);
+            }
+        }
+
+        public class Unary : Expr
+        {
+            public Token Operator { get; }
+            public Expr Right { get; }
+
+            public Unary(Token operatorToken, Expr right)
+            {
+                Operator = operatorToken;
+                Right = right;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitUnaryExpr(this);
+            }
+        }
+
+        // Add other expression subclasses here...
+    }
+
+    class AstPrinter : Expr.Visitor<string>
+    {
+        public string VisitBinaryExpr(Expr.Binary expr)
+        {
+            return Parenthesize(expr.Operator.Lexeme, expr.Left, expr.Right);
+        }
+
+        public string VisitGroupingExpr(Expr.Grouping expr)
+        {
+            return Parenthesize("group", expr.Expression);
+        }
+
+        public string VisitLiteralExpr(Expr.Literal expr)
+        {
+            if (expr.Value == null) return "nil";
+            return expr.Value.ToString();
+        }
+
+        public string VisitUnaryExpr(Expr.Unary expr)
+        {
+            return Parenthesize(expr.Operator.Lexeme, expr.Right);
+        }
+
+        private string Parenthesize(string name, params Expr[] exprs)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("(").Append(name);
+            foreach (var expr in exprs)
+            {
+                builder.Append(" ");
+                builder.Append(expr.Accept(this));
+            }
+            builder.Append(")");
+
+            return builder.ToString();
+        }
+
+        // Use this method to print the AST for an expression
+        public string Print(Expr expr)
+        {
+            return expr.Accept(this);
+        }
+    }
+
 }
