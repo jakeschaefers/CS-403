@@ -6,7 +6,9 @@ namespace LoxInterpreter
 {
     class Lox
     {
+        private static Interpreter interpreter = new Interpreter();
         private static bool hadError = false;
+        private static bool hadRuntimeError = false;
 
         static void Main(string[] args)
         {
@@ -59,15 +61,13 @@ namespace LoxInterpreter
         {
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.ScanTokens();
-
             Parser parser = new Parser(tokens);
             Expr expression = parser.Parse();
 
             // Stop if there was a syntax error.
             if (hadError) return;
 
-            AstPrinter printer = new AstPrinter();
-            Console.WriteLine(printer.Print(expression));
+            dynamic result = interpreter.Evaluate(expression);
         }
 
         public static void Error(int line, string message)
@@ -85,6 +85,12 @@ namespace LoxInterpreter
             {
                 Report(token.Line, " at '" + token.Lexeme + "'", message);
             }
+        }
+
+        public static void RuntimeError(Interpreter.RuntimeError error)
+        {
+            Console.Error.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
+            hadRuntimeError = true;
         }
 
         private static void Report(int line, string where, string message)
