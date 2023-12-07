@@ -230,7 +230,7 @@ namespace LoxInterpreter
             {
                 globals.Assign(expr.name, value);
             }
-            
+
             return value;
         }
 
@@ -321,7 +321,7 @@ namespace LoxInterpreter
             if (arguments.Count != function.Arity())
             {
                 throw new RuntimeError(expr.Paren, "Expected" +
-                    function.Arity() + " arguments but got " + 
+                    function.Arity() + " arguments but got " +
                     arguments.Count + ".");
             }
 
@@ -334,6 +334,6 @@ namespace LoxInterpreter
             throw new RuntimeError(oper, "Operands must be numbers.");
         }
 
-        
+
     }
 }

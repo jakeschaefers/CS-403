@@ -109,7 +109,7 @@ namespace LoxInterpreter
             if (initializer != null)
             {
                 body = new Stmt.Block(
-                    new List<Stmt> {initializer, body});
+                    new List<Stmt> { initializer, body });
             }
 
             return body;
@@ -205,14 +205,15 @@ namespace LoxInterpreter
             List<Stmt> body = Block();
             return new Stmt.Function(name, parameters, body);
         }
-        
-        private List<Stmt> Block() {
+
+        private List<Stmt> Block()
+        {
             List<Stmt> statements = new List<Stmt>();
 
             while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
             {
                 statements.Add(Declaration());
-            } 
+            }
 
             Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
             return statements;
@@ -239,7 +240,7 @@ namespace LoxInterpreter
             return expr;
         }
 
-        private Expr Or() 
+        private Expr Or()
         {
             Expr expr = And();
 
@@ -256,7 +257,7 @@ namespace LoxInterpreter
         {
             Expr expr = Equality();
 
-            while(Match(TokenType.AND))
+            while (Match(TokenType.AND))
             {
                 Token operatorToken = Previous();
                 Expr right = Equality();
@@ -370,7 +371,7 @@ namespace LoxInterpreter
                     break;
                 }
             }
-            
+
             return expr;
         }
 
@@ -413,13 +414,13 @@ namespace LoxInterpreter
 
             return false;
         }
-        
+
         private Token Consume(TokenType type, string message)
         {
             if (Check(type)) return Advance();
             throw Error(Peek(), message);
         }
-        
+
         private bool Check(TokenType type)
         {
             if (IsAtEnd()) return false;

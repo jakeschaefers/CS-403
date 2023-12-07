@@ -4,7 +4,8 @@ namespace LoxInterpreter
 {
     public abstract class Stmt
     {
-        public interface Visitor {
+        public interface Visitor
+        {
             void VisitExpressionStmt(Expression Stmt);
             void VisitPrintStmt(Print Stmt);
             void VisitVarStmt(Var stmt);
@@ -35,7 +36,7 @@ namespace LoxInterpreter
         public class Print : Stmt
         {
             public readonly Expr expression;
-            
+
             public Print(Expr expression)
             {
                 this.expression = expression;

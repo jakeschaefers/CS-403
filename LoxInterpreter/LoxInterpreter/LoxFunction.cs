@@ -30,7 +30,7 @@ namespace LoxInterpreter
             }
 
             try
-            {    
+            {
                 interpreter.ExecuteBlock(declaration.body, environment);
             }
             catch (Return returnValue)

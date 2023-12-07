@@ -168,7 +168,7 @@ namespace LoxInterpreter
 
         public void Resolve(List<Stmt> statements)
         {
-            foreach (Stmt statement in statements) 
+            foreach (Stmt statement in statements)
             {
                 Resolve(statement);
             }
