@@ -38,7 +38,6 @@ namespace LoxInterpreter
         {
             try
             {
-                if (Match(TokenType.CLASS)) return ClassDeclaration();
                 if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
 
@@ -49,22 +48,6 @@ namespace LoxInterpreter
                 Synchronize();
                 return null;
             }
-        }
-
-        private Stmt ClassDeclaration()
-        {
-            Token name = Consume(TokenType.IDENTIFIER, "Expect class name.");
-            Consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
-
-            List<Stmt.Function> methods = new List<Stmt.Function>();
-            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
-            {
-                methods.Add(Function("method"));
-            }
-
-            Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
-
-            return new Stmt.Class(name, methods);
         }
 
         private Stmt Statement()
@@ -126,7 +109,7 @@ namespace LoxInterpreter
             if (initializer != null)
             {
                 body = new Stmt.Block(
-                    new List<Stmt> {initializer, body});
+                    new List<Stmt> { initializer, body });
             }
 
             return body;
@@ -222,14 +205,15 @@ namespace LoxInterpreter
             List<Stmt> body = Block();
             return new Stmt.Function(name, parameters, body);
         }
-        
-        private List<Stmt> Block() {
+
+        private List<Stmt> Block()
+        {
             List<Stmt> statements = new List<Stmt>();
 
             while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
             {
                 statements.Add(Declaration());
-            } 
+            }
 
             Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
             return statements;
@@ -249,11 +233,6 @@ namespace LoxInterpreter
                     Token name = ((Expr.Variable)expr).Name;
                     return new Expr.Assign(name, value);
                 }
-                else if (expr is Expr.Get)
-                {
-                    Expr.Get get = (Expr.Get)expr;
-                    return new Expr.Set(get.obj, get.name, value);
-                }
 
                 Error(equals, "Invalid assignment target.");
             }
@@ -261,7 +240,7 @@ namespace LoxInterpreter
             return expr;
         }
 
-        private Expr Or() 
+        private Expr Or()
         {
             Expr expr = And();
 
@@ -278,7 +257,7 @@ namespace LoxInterpreter
         {
             Expr expr = Equality();
 
-            while(Match(TokenType.AND))
+            while (Match(TokenType.AND))
             {
                 Token operatorToken = Previous();
                 Expr right = Equality();
@@ -387,17 +366,12 @@ namespace LoxInterpreter
                 {
                     expr = FinishCall(expr);
                 }
-                else if (Match(TokenType.DOT)) 
-                {
-                    Token name = Consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
-                    expr = new Expr.Get(expr, name);
-                }
                 else
                 {
                     break;
                 }
             }
-            
+
             return expr;
         }
 
@@ -411,8 +385,6 @@ namespace LoxInterpreter
             {
                 return new Expr.Literal(Previous().Literal);
             }
-
-            if (Match(TokenType.THIS)) return new Expr.This(Previous());
 
             if (Match(TokenType.IDENTIFIER))
             {
@@ -442,13 +414,13 @@ namespace LoxInterpreter
 
             return false;
         }
-        
+
         private Token Consume(TokenType type, string message)
         {
             if (Check(type)) return Advance();
             throw Error(Peek(), message);
         }
-        
+
         private bool Check(TokenType type)
         {
             if (IsAtEnd()) return false;

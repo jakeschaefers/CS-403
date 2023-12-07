@@ -1,23 +1,14 @@
 namespace LoxInterpreter
 {
-    public class LoxFunction : LoxCallable
+    class LoxFunction : LoxCallable
     {
         private readonly Stmt.Function declaration;
         private readonly Environment closure;
-        private readonly bool isInitializer;
 
-        public LoxFunction(Stmt.Function declaration, Environment closure, bool isInitializer)
+        public LoxFunction(Stmt.Function declaration, Environment closure)
         {
-            this.isInitializer = isInitializer;
-            this.closure = closure;
             this.declaration = declaration;
-        }
-
-        public LoxFunction Bind(LoxInstance instance)
-        {
-            Environment environment = new Environment(closure);
-            environment.Define("this", instance);
-            return new LoxFunction(declaration, environment, isInitializer);
+            this.closure = closure;
         }
 
         public override string ToString()
@@ -39,16 +30,13 @@ namespace LoxInterpreter
             }
 
             try
-            {    
+            {
                 interpreter.ExecuteBlock(declaration.body, environment);
             }
             catch (Return returnValue)
             {
-                if (isInitializer) return closure.GetAt(0, "this");
                 return returnValue.value;
             }
-
-            if (isInitializer) return closure.GetAt(0, "this");
 
             return null;
         }

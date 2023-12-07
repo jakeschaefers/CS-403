@@ -5,7 +5,6 @@ namespace LoxInterpreter
         private readonly Interpreter interpreter;
         private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
         private FunctionType currentFunction = FunctionType.NONE;
-        private ClassType currentClass = ClassType.NONE;
 
         public Resolver(Interpreter interpreter)
         {
@@ -15,49 +14,14 @@ namespace LoxInterpreter
         private enum FunctionType
         {
             NONE,
-            FUNCTION,
-            INITIALIZER,
-            METHOD
+            FUNCTION
         }
-
-        private enum ClassType
-        {
-            NONE,
-            CLASS
-        }
-
 
         public void VisitBlockStmt(Stmt.Block stmt)
         {
             BeginScope();
             Resolve(stmt.statements);
             EndScope();
-        }
-
-        public void VisitClassStmt(Stmt.Class stmt)
-        {
-            ClassType enclosingClass = currentClass;
-            currentClass = ClassType.CLASS;
-
-            Declare(stmt.name);
-            Define(stmt.name);
-
-            BeginScope();
-            scopes.Peek().Add("this", true);
-
-            foreach (Stmt.Function method in stmt.methods)
-            {
-                FunctionType declaration = FunctionType.METHOD;
-                if (method.name.Lexeme.Equals("init"))
-                {
-                    declaration = FunctionType.INITIALIZER;
-                }
-                ResolveFunction(method, declaration);
-            }
-
-            EndScope();
-
-            currentClass = enclosingClass;
         }
 
         public void VisitExpressionStmt(Stmt.Expression stmt)
@@ -94,10 +58,6 @@ namespace LoxInterpreter
 
             if (stmt.value != null)
             {
-                if (currentFunction == FunctionType.INITIALIZER)
-                {
-                    Lox.Error(stmt.keyword, "Can't return a value from an initializer.");
-                }
                 Resolve(stmt.value);
             }
         }
@@ -134,18 +94,12 @@ namespace LoxInterpreter
 
         public object VisitCallExpr(Expr.Call expr)
         {
-            Resolve(expr.callee);
+            Resolve(expr.Callee);
 
-            foreach (Expr argument in expr.arguments)
+            foreach (Expr argument in expr.Arguments)
             {
                 Resolve(argument);
             }
-            return null;
-        }
-
-        public object VisitGetExpr(Expr.Get expr)
-        {
-            Resolve(expr.obj);
             return null;
         }
 
@@ -164,26 +118,6 @@ namespace LoxInterpreter
         {
             Resolve(expr.left);
             Resolve(expr.right);
-            return null;
-        }
-
-        public object VisitSetExpr(Expr.Set expr)
-        {
-            Resolve(expr.value);
-            Resolve(expr.obj);
-            return null;
-        }
-
-        public object VisitThisExpr(Expr.This expr)
-        {
-            
-            if (currentClass == ClassType.NONE)
-            {
-                Lox.Error(expr.keyword, "Can't use 'this' outside of a class.");
-                return null;
-            }
-
-            ResolveLocal(expr, expr.keyword);
             return null;
         }
 
@@ -234,7 +168,7 @@ namespace LoxInterpreter
 
         public void Resolve(List<Stmt> statements)
         {
-            foreach (Stmt statement in statements) 
+            foreach (Stmt statement in statements)
             {
                 Resolve(statement);
             }

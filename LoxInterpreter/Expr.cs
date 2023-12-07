@@ -12,9 +12,6 @@ namespace LoxInterpreter
             R VisitAssignExpr(Assign expr);
             R VisitLogicalExpr(Logical expr);
             R VisitCallExpr(Call expr);
-            R VisitGetExpr(Get expr);
-            R VisitSetExpr(Set expr);
-            R VisitThisExpr(This expr);
         }
 
         public abstract R Accept<R>(Visitor<R> visitor);
@@ -138,15 +135,15 @@ namespace LoxInterpreter
 
         public class Call : Expr
         {
-            public readonly Expr callee;
-            public readonly Token paren;
-            public readonly List<Expr> arguments;
+            public readonly Expr Callee;
+            public readonly Token Paren;
+            public readonly List<Expr> Arguments;
 
             public Call(Expr callee, Token paren, List<Expr> arguments)
             {
-                this.callee = callee;
-                this.paren = paren;
-                this.arguments = arguments;
+                Callee = callee;
+                Paren = paren;
+                Arguments = arguments;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -155,55 +152,5 @@ namespace LoxInterpreter
             }
         }
 
-        public class Get : Expr
-        {
-            public readonly Expr obj;
-            public readonly Token name;
-
-            public Get(Expr obj, Token name)
-            {
-                this.obj = obj;
-                this.name = name;
-            }
-
-            public override R Accept<R>(Visitor<R> visitor)
-            {
-                return visitor.VisitGetExpr(this);
-            }
-        }
-
-        public class Set : Expr
-        {
-            public readonly Expr obj;
-            public readonly Token name;
-            public readonly Expr value;
-
-            public Set(Expr obj, Token name, Expr value)
-            {
-                this.obj = obj;
-                this.name = name;
-                this.value = value;
-            }
-
-            public override R Accept<R>(Visitor<R> visitor)
-            {
-                return visitor.VisitSetExpr(this);
-            }
-        }
-
-        public class This : Expr
-        {
-            public readonly Token keyword;
-
-            public This(Token keyword)
-            {
-                this.keyword = keyword;
-            }
-
-            public override R Accept<R>(Visitor<R> visitor)
-            {
-                return visitor.VisitThisExpr(this);
-            }
-        }
     }
 }

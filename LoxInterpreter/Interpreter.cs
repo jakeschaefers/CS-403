@@ -81,25 +81,6 @@ namespace LoxInterpreter
             return Evaluate(expr.right);
         }
 
-        public object VisitSetExpr(Expr.Set expr)
-        {
-            object obj = Evaluate(expr.obj);
-
-            if (!(obj is LoxInstance))
-            {
-                throw new RuntimeError(expr.name, "Only instances have fields.");
-            }
-
-            object value = Evaluate(expr.value);
-            ((LoxInstance)obj).Set(expr.name, value);
-            return value;
-        }
-
-        public object VisitThisExpr(Expr.This expr)
-        {
-            return LookUpVariable(expr.keyword, expr);
-        }
-
         public object VisitUnaryExpr(Expr.Unary expr)
         {
             object right = Evaluate(expr.Right);
@@ -180,20 +161,6 @@ namespace LoxInterpreter
             ExecuteBlock(stmt.statements, new Environment(environment));
         }
 
-        public void VisitClassStmt(Stmt.Class stmt)
-        {
-            environment.Define(stmt.name.Lexeme, null);
-            Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
-            foreach (Stmt.Function method in stmt.methods)
-            {
-                LoxFunction function = new LoxFunction(method, environment, method.name.Lexeme.Equals("init"));
-                methods[method.name.Lexeme] = function;
-            }
-
-            LoxClass klass = new LoxClass(stmt.name.Lexeme, methods);
-            environment.Assign(stmt.name, klass);
-        }
-
         public void VisitExpressionStmt(Stmt.Expression stmt)
         {
             Evaluate(stmt.expression);
@@ -213,7 +180,7 @@ namespace LoxInterpreter
 
         public void VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new LoxFunction(stmt, environment, false);
+            LoxFunction function = new LoxFunction(stmt, environment);
             environment.Define(stmt.name.Lexeme, function);
         }
 
@@ -263,7 +230,7 @@ namespace LoxInterpreter
             {
                 globals.Assign(expr.name, value);
             }
-            
+
             return value;
         }
 
@@ -336,40 +303,29 @@ namespace LoxInterpreter
 
         public object VisitCallExpr(Expr.Call expr)
         {
-            object callee = Evaluate(expr.callee);
+            object callee = Evaluate(expr.Callee);
 
             List<object> arguments = new List<object>();
-            foreach (Expr argument in expr.arguments)
+            foreach (Expr argument in expr.Arguments)
             {
                 arguments.Add(Evaluate(argument));
             }
 
             if (!(callee is LoxCallable))
             {
-                throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+                throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
             }
 
             LoxCallable function = (LoxCallable)callee;
 
             if (arguments.Count != function.Arity())
             {
-                throw new RuntimeError(expr.paren, "Expected" +
-                    function.Arity() + " arguments but got " + 
+                throw new RuntimeError(expr.Paren, "Expected" +
+                    function.Arity() + " arguments but got " +
                     arguments.Count + ".");
             }
 
             return function.Call(this, arguments);
-        }
-
-        public object VisitGetExpr(Expr.Get expr)
-        {
-            object obj = Evaluate(expr.obj);
-            if (obj is LoxInstance)
-            {
-                return ((LoxInstance) obj).Get(expr.name);
-            }
-
-            throw new RuntimeError(expr.name, "Only instances have properties.");
         }
 
         private void CheckNumberOperands(Token oper, object left, object right)
@@ -378,6 +334,6 @@ namespace LoxInterpreter
             throw new RuntimeError(oper, "Operands must be numbers.");
         }
 
-        
+
     }
 }
