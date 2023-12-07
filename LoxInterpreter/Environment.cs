@@ -41,26 +41,26 @@ namespace LoxInterpreter
 
         public void AssignAt(int distance, Token name, object value)
         {
-            Ancestor(distance).values[name.Lexeme] = value;
+            Ancestor(distance).values[name.lexeme] = value;
         }
 
         public object Get(Token name)
         {
-            if (values.ContainsKey(name.Lexeme))
+            if (values.ContainsKey(name.lexeme))
             {
-                return values[name.Lexeme];
+                return values[name.lexeme];
             }
 
             if (enclosing != null) return enclosing.Get(name);
 
-            throw new RuntimeError(name, "Undefined variable '" + name.Lexeme + "'.");
+            throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
         }
 
         public void Assign(Token name, object value)
         {
-            if (values.ContainsKey(name.Lexeme))
+            if (values.ContainsKey(name.lexeme))
             {
-                values[name.Lexeme] = value;
+                values[name.lexeme] = value;
                 return;
             }
 
@@ -70,7 +70,7 @@ namespace LoxInterpreter
                 return;
             }
 
-            throw new RuntimeError(name, "Undefined variable '" + name.Lexeme + "'.");
+            throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
         }
     }
 }

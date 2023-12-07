@@ -12,6 +12,10 @@ namespace LoxInterpreter
             R VisitAssignExpr(Assign expr);
             R VisitLogicalExpr(Logical expr);
             R VisitCallExpr(Call expr);
+            R VisitGetExpr(Get expr);
+            R VisitSetExpr(Set expr);
+            R VisitThisExpr(This expr);
+            R VisitSuperExpr(Super expr);
         }
 
         public abstract R Accept<R>(Visitor<R> visitor);
@@ -37,11 +41,11 @@ namespace LoxInterpreter
 
         public class Grouping : Expr
         {
-            public Expr Expression { get; }
+            public Expr expression { get; }
 
             public Grouping(Expr expression)
             {
-                Expression = expression;
+                this.expression = expression;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -68,12 +72,12 @@ namespace LoxInterpreter
         public class Unary : Expr
         {
             public Token OperatorToken { get; }
-            public Expr Right { get; }
+            public Expr right { get; }
 
             public Unary(Token operatorToken, Expr right)
             {
                 OperatorToken = operatorToken;
-                Right = right;
+                this.right = right;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -84,11 +88,11 @@ namespace LoxInterpreter
 
         public class Variable : Expr
         {
-            public readonly Token Name;
+            public readonly Token name;
 
             public Variable(Token name)
             {
-                Name = name;
+                this.name = name;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -135,15 +139,15 @@ namespace LoxInterpreter
 
         public class Call : Expr
         {
-            public readonly Expr Callee;
-            public readonly Token Paren;
-            public readonly List<Expr> Arguments;
+            public readonly Expr callee;
+            public readonly Token paren;
+            public readonly List<Expr> arguments;
 
             public Call(Expr callee, Token paren, List<Expr> arguments)
             {
-                Callee = callee;
-                Paren = paren;
-                Arguments = arguments;
+                this.callee = callee;
+                this.paren = paren;
+                this.arguments = arguments;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -152,5 +156,72 @@ namespace LoxInterpreter
             }
         }
 
+        public class Get : Expr
+        {
+            public readonly Expr obj;
+            public readonly Token name;
+
+            public Get(Expr obj, Token name)
+            {
+                this.obj = obj;
+                this.name = name;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitGetExpr(this);
+            }
+        }
+
+        public class Set : Expr
+        {
+            public readonly Expr obj;
+            public readonly Token name;
+            public readonly Expr value;
+
+            public Set(Expr obj, Token name, Expr value)
+            {
+                this.obj = obj;
+                this.name = name;
+                this.value = value;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitSetExpr(this);
+            }
+        }
+
+        public class This : Expr
+        {
+            public readonly Token keyword;
+
+            public This(Token keyword)
+            {
+                this.keyword = keyword;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitThisExpr(this);
+            }
+        }
+
+        public class Super : Expr
+        {
+            public readonly Token keyword;
+            public readonly Token method;
+
+            public Super(Token keyword, Token method)
+            {
+                this.keyword = keyword;
+                this.method = method;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitSuperExpr(this);
+            }
+        }
     }
 }

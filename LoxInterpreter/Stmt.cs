@@ -14,6 +14,8 @@ namespace LoxInterpreter
             void VisitWhileStmt(While stmt);
             void VisitFunctionStmt(Function stmt);
             void VisitReturnStmt(Return stmt);
+            void VisitClassStmt(Class stmt);
+
         }
 
         public abstract void Accept(Visitor visitor);
@@ -152,5 +154,23 @@ namespace LoxInterpreter
             }
         }
 
+        public class Class : Stmt
+        {
+            public readonly Token name;
+            public readonly Expr.Variable superclass;
+            public readonly List<Function> methods;
+
+            public Class(Token name, Expr.Variable superclass, List<Function> methods)
+            {
+                this.name = name;
+                this.superclass = superclass;
+                this.methods = methods;
+            }
+
+            public override void Accept(Visitor visitor)
+            {
+                visitor.VisitClassStmt(this);
+            }
+        }
     }
 }
