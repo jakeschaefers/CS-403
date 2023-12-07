@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace LoxInterpreter
 {
-    class Interpreter : Expr.Visitor<object>
+    public class Interpreter : Expr.Visitor<object>, Stmt.Visitor
     {
-        public void Interpret(Expr expression)
+        private Environment environment = new Environment();
+
+        public void Interpret(List<Stmt> statements)
         {
             try
             {
-                object value = Evaluate(expression);
-                Console.WriteLine(Stringify(value));
+                foreach (var statement in statements)
+                {
+                    Execute(statement);
+                }
             }
             catch (RuntimeError error)
             {
@@ -43,18 +47,16 @@ namespace LoxInterpreter
         {
             object right = Evaluate(expr.Right);
 
-            switch (expr.Operator.Type)
+            switch (expr.OperatorToken.Type)
             {
                 case TokenType.BANG:
                     return !IsTruthy(right);
                 case TokenType.MINUS:
-                    CheckNumberOperand(expr.Operator, right);
+                    CheckNumberOperand(expr.OperatorToken, right);
                     return -(double)right;
                 default:
-                    throw new RuntimeError(expr.Operator, "Unsupported unary operator.");
+                    throw new RuntimeError(expr.OperatorToken, "Unsupported unary operator.");
             }
-            // Unreachable, but need it or throws error
-            return null;
         }
 
         private void CheckNumberOperand(Token oper, object operand)
@@ -88,27 +90,89 @@ namespace LoxInterpreter
             return expr.Accept(this);
         }
 
+        private void Execute(Stmt stmt)
+        {
+            stmt.Accept(this);
+        }
+
+        public void ExecuteBlock(List<Stmt> statements, Environment environment)
+        {
+            Environment previous = this.environment;
+            try
+            {
+                this.environment = environment;
+
+                foreach (Stmt statement in statements)
+                {
+                    Execute(statement);
+                }
+            }
+            finally
+            {
+                this.environment = previous;
+            }
+        }
+
+        public void VisitBlockStmt(Stmt.Block stmt)
+        {
+            ExecuteBlock(stmt.statements, new Environment(environment));
+        }
+
+        public void VisitExpressionStmt(Stmt.Expression stmt)
+        {
+            Evaluate(stmt.expression);
+        }
+
+        public void VisitPrintStmt(Stmt.Print stmt)
+        {
+            var value = Evaluate(stmt.expression);
+            Console.WriteLine(Stringify(value));
+        }
+
+        public void VisitVarStmt(Stmt.Var stmt)
+        {
+            object value = null;
+            if (stmt.initializer != null)
+            {
+                value = Evaluate(stmt.initializer);
+            }
+
+            environment.Define(stmt.name.Lexeme, value);
+        }
+
+        public object VisitAssignExpr(Expr.Assign expr)
+        {
+            object value = Evaluate(expr.value);
+            environment.Assign(expr.name, value);
+            return value;
+        }
+
+        public object VisitVariableExpr(Expr.Variable expr)
+        {
+            return environment.Get(expr.Name);
+        }
+
         public object VisitBinaryExpr(Expr.Binary expr)
         {
             object left = Evaluate(expr.Left);
             object right = Evaluate(expr.Right);
 
-            switch (expr.Operator.Type)
+            switch (expr.OperatorToken.Type)
             {
                 case TokenType.GREATER:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left > (double)right;
                 case TokenType.GREATER_EQUAL:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left >= (double)right;
                 case TokenType.LESS:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left < (double)right;
                 case TokenType.LESS_EQUAL:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left <= (double)right;
                 case TokenType.MINUS:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left - (double)right;
                 case TokenType.PLUS:
                     if (left is double && right is double)
@@ -121,22 +185,20 @@ namespace LoxInterpreter
                         return (string)left + (string)right;
                     }
 
-                    throw new RuntimeError(expr.Operator, "Operands must be two numbers or two strings.");
+                    throw new RuntimeError(expr.OperatorToken, "Operands must be two numbers or two strings.");
                 case TokenType.SLASH:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left / (double)right;
                 case TokenType.STAR:
-                    CheckNumberOperands(expr.Operator, left, right);
+                    CheckNumberOperands(expr.OperatorToken, left, right);
                     return (double)left * (double)right;
                 case TokenType.BANG_EQUAL:
                     return !IsEqual(left, right);
                 case TokenType.EQUAL_EQUAL:
                     return IsEqual(left, right);
                 default:
-                    throw new RuntimeError(expr.Operator, "Unsupported binary operator.");
+                    throw new RuntimeError(expr.OperatorToken, "Unsupported binary operator.");
             }
-            // Unreachable, but need it or throws error
-            return null;
         }
 
         private void CheckNumberOperands(Token oper, object left, object right)
@@ -144,5 +206,7 @@ namespace LoxInterpreter
             if (left is double && right is double) return;
             throw new RuntimeError(oper, "Operands must be numbers.");
         }
+
+        
     }
 }

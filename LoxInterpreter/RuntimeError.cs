@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LoxInterpreter
 {
-    class RuntimeError : Exception
+    public class RuntimeError : Exception
     {
         public Token Token { get; }
 
