@@ -1,11 +1,31 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace LoxInterpreter
 {
     public class Interpreter : Expr.Visitor<object>, Stmt.Visitor
     {
-        private Environment environment = new Environment();
+        public readonly Environment globals = new Environment();
+        private Environment environment;
+
+        public Interpreter()
+        {
+            environment = globals;
+            globals.Define("clock", new ClockFunction());
+        }
+
+        private class ClockFunction : LoxCallable
+        {
+            public int Arity() => 0;
+
+            public object Call(Interpreter interpreter, List<object> arguments)
+            {
+                return (double)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
+            }
+
+            public override string ToString() => "<native fn>";
+        }
 
         public void Interpret(List<Stmt> statements)
         {
@@ -151,10 +171,24 @@ namespace LoxInterpreter
             }
         }
 
+        public void VisitFunctionStmt(Stmt.Function stmt)
+        {
+            LoxFunction function = new LoxFunction(stmt, environment);
+            environment.Define(stmt.name.Lexeme, function);
+        }
+
         public void VisitPrintStmt(Stmt.Print stmt)
         {
             var value = Evaluate(stmt.expression);
             Console.WriteLine(Stringify(value));
+        }
+
+        public void VisitReturnStmt(Stmt.Return stmt)
+        {
+            object value = null;
+            if (stmt.value != null) value = Evaluate(stmt.value);
+
+            throw new Return(value);
         }
 
         public void VisitVarStmt(Stmt.Var stmt)
@@ -235,6 +269,33 @@ namespace LoxInterpreter
                 default:
                     throw new RuntimeError(expr.OperatorToken, "Unsupported binary operator.");
             }
+        }
+
+        public object VisitCallExpr(Expr.Call expr)
+        {
+            object callee = Evaluate(expr.Callee);
+
+            List<object> arguments = new List<object>();
+            foreach (Expr argument in expr.Arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+
+            if (!(callee is LoxCallable))
+            {
+                throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
+            }
+
+            LoxCallable function = (LoxCallable)callee;
+
+            if (arguments.Count != function.Arity())
+            {
+                throw new RuntimeError(expr.Paren, "Expected" +
+                    function.Arity() + " arguments but got " + 
+                    arguments.Count + ".");
+            }
+
+            return function.Call(this, arguments);
         }
 
         private void CheckNumberOperands(Token oper, object left, object right)

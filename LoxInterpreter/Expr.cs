@@ -11,6 +11,7 @@ namespace LoxInterpreter
             R VisitVariableExpr(Variable expr);
             R VisitAssignExpr(Assign expr);
             R VisitLogicalExpr(Logical expr);
+            R VisitCallExpr(Call expr);
         }
 
         public abstract R Accept<R>(Visitor<R> visitor);
@@ -129,6 +130,25 @@ namespace LoxInterpreter
             public override R Accept<R>(Visitor<R> visitor)
             {
                 return visitor.VisitLogicalExpr(this);
+            }
+        }
+
+        public class Call : Expr
+        {
+            public readonly Expr Callee;
+            public readonly Token Paren;
+            public readonly List<Expr> Arguments;
+
+            public Call(Expr callee, Token paren, List<Expr> arguments)
+            {
+                Callee = callee;
+                Paren = paren;
+                Arguments = arguments;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitCallExpr(this);
             }
         }
 

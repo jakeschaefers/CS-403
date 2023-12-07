@@ -11,6 +11,8 @@ namespace LoxInterpreter
             void VisitBlockStmt(Block stmt);
             void VisitIfStmt(If stmt);
             void VisitWhileStmt(While stmt);
+            void VisitFunctionStmt(Function stmt);
+            void VisitReturnStmt(Return stmt);
         }
 
         public abstract void Accept(Visitor visitor);
@@ -24,7 +26,7 @@ namespace LoxInterpreter
                 this.expression = expression;
             }
 
-            public override void Accept(Stmt.Visitor visitor)
+            public override void Accept(Visitor visitor)
             {
                 visitor.VisitExpressionStmt(this);
             }
@@ -39,7 +41,7 @@ namespace LoxInterpreter
                 this.expression = expression;
             }
 
-            public override void Accept(Stmt.Visitor visitor)
+            public override void Accept(Visitor visitor)
             {
                 visitor.VisitPrintStmt(this);
             }
@@ -112,5 +114,42 @@ namespace LoxInterpreter
                 visitor.VisitWhileStmt(this);
             }
         }
+
+        public class Function : Stmt
+        {
+            public readonly Token name;
+            public readonly List<Token> parameters;
+            public readonly List<Stmt> body;
+
+            public Function(Token name, List<Token> parameters, List<Stmt> body)
+            {
+                this.name = name;
+                this.parameters = parameters;
+                this.body = body;
+            }
+
+            public override void Accept(Visitor visitor)
+            {
+                visitor.VisitFunctionStmt(this);
+            }
+        }
+
+        public class Return : Stmt
+        {
+            public readonly Token keyword;
+            public readonly Expr value;
+
+            public Return(Token keyword, Expr value)
+            {
+                this.keyword = keyword;
+                this.value = value;
+            }
+
+            public override void Accept(Visitor visitor)
+            {
+                visitor.VisitReturnStmt(this);
+            }
+        }
+
     }
 }
