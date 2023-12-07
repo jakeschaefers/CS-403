@@ -8,6 +8,8 @@ namespace LoxInterpreter
     {
         public readonly Environment globals = new Environment();
         private Environment environment;
+        private readonly Dictionary<Expr, int> locals = new Dictionary<Expr, int>();
+
 
         public Interpreter()
         {
@@ -79,6 +81,25 @@ namespace LoxInterpreter
             return Evaluate(expr.right);
         }
 
+        public object VisitSetExpr(Expr.Set expr)
+        {
+            object obj = Evaluate(expr.Object);
+
+            if (!(obj is LoxInstance))
+            {
+                throw new RuntimeError(expr.Name, "Only instances have fields.");
+            }
+
+            object value = Evaluate(expr.Value);
+            ((LoxInstance)obj).Set(expr.Name, value);
+            return value;
+        }
+
+        public object VisitThisExpr(Expr.This expr)
+        {
+            return LookUpVariable(expr.Keyword, expr);
+        }
+
         public object VisitUnaryExpr(Expr.Unary expr)
         {
             object right = Evaluate(expr.Right);
@@ -131,6 +152,11 @@ namespace LoxInterpreter
             stmt.Accept(this);
         }
 
+        public void Resolve(Expr expr, int depth)
+        {
+            locals[expr] = depth;
+        }
+
         public void ExecuteBlock(List<Stmt> statements, Environment environment)
         {
             Environment previous = this.environment;
@@ -154,6 +180,19 @@ namespace LoxInterpreter
             ExecuteBlock(stmt.statements, new Environment(environment));
         }
 
+        public void VisitClassStmt(Stmt.Class stmt)
+        {
+            environment.Define(stmt.name.Lexeme, null);
+            Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
+            foreach (Stmt.Function method in stmt.methods)
+            {
+                LoxFunction function = new LoxFunction(method, environment, method.name.Lexeme.Equals("init"));
+            }
+
+            LoxClass klass = new LoxClass(stmt.name.Lexeme, methods);
+            environment.Assign(stmt.name, klass);
+        }
+
         public void VisitExpressionStmt(Stmt.Expression stmt)
         {
             Evaluate(stmt.expression);
@@ -173,7 +212,7 @@ namespace LoxInterpreter
 
         public void VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new LoxFunction(stmt, environment);
+            LoxFunction function = new LoxFunction(stmt, environment, false);
             environment.Define(stmt.name.Lexeme, function);
         }
 
@@ -213,13 +252,36 @@ namespace LoxInterpreter
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
-            environment.Assign(expr.name, value);
+
+            int distance = locals[expr];
+            if (distance != null)
+            {
+                environment.AssignAt(distance, expr.name, value);
+            }
+            else
+            {
+                globals.Assign(expr.name, value);
+            }
+            
             return value;
         }
 
         public object VisitVariableExpr(Expr.Variable expr)
         {
             return environment.Get(expr.Name);
+        }
+
+        private object LookUpVariable(Token name, Expr expr)
+        {
+            int distance = locals[expr];
+            if (distance != null)
+            {
+                return environment.GetAt(distance, name.Lexeme);
+            }
+            else
+            {
+                return globals.Get(name);
+            }
         }
 
         public object VisitBinaryExpr(Expr.Binary expr)
@@ -296,6 +358,17 @@ namespace LoxInterpreter
             }
 
             return function.Call(this, arguments);
+        }
+
+        public object VisitGetExpr(Expr.Get expr)
+        {
+            object obj = Evaluate(expr.Object);
+            if (obj is LoxInstance)
+            {
+                return ((LoxInstance) obj).Get(expr.Name);
+            }
+
+            throw new RuntimeError(expr.Name, "Only instances have properties.");
         }
 
         private void CheckNumberOperands(Token oper, object left, object right)

@@ -12,6 +12,9 @@ namespace LoxInterpreter
             R VisitAssignExpr(Assign expr);
             R VisitLogicalExpr(Logical expr);
             R VisitCallExpr(Call expr);
+            R VisitGetExpr(Get expr);
+            R VisitSetExpr(Set expr);
+            R VisitThisExpr(This expr);
         }
 
         public abstract R Accept<R>(Visitor<R> visitor);
@@ -152,5 +155,55 @@ namespace LoxInterpreter
             }
         }
 
+        public class Get : Expr
+        {
+            public readonly Expr Object;
+            public readonly Token Name;
+
+            public Get(Expr obj, Token name)
+            {
+                Object = obj;
+                Name = name;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitGetExpr(this);
+            }
+        }
+
+        public class Set : Expr
+        {
+            public readonly Expr Object;
+            public readonly Token Name;
+            public readonly Expr Value;
+
+            public Set(Expr obj, Token name, Expr value)
+            {
+                Object = obj;
+                Name = name;
+                Value = value;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitSetExpr(this);
+            }
+        }
+
+        public class This : Expr
+        {
+            public readonly Token Keyword;
+
+            public This(Token keyword)
+            {
+                Keyword = keyword;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitThisExpr(this);
+            }
+        }
     }
 }

@@ -8,10 +8,10 @@ namespace LoxInterpreter
 {
     public class Lox
     {
-        private static readonly Interpreter Interpreter = new Interpreter();
+        private static readonly Interpreter interpreter = new Interpreter();
 
-        private static bool HadError = false;
-        private static bool HadRuntimeError = false;
+        private static bool hadError = false;
+        private static bool hadRuntimeError = false;
 
         static void Main(string[] args)
         {
@@ -42,8 +42,8 @@ namespace LoxInterpreter
             byte[] bytes = File.ReadAllBytes(path);
             Run(Encoding.Default.GetString(bytes));
 
-            if (HadError) System.Environment.Exit(65);
-            if (HadRuntimeError) System.Environment.Exit(70);
+            if (hadError) System.Environment.Exit(65);
+            if (hadRuntimeError) System.Environment.Exit(70);
 
         }
 
@@ -58,7 +58,7 @@ namespace LoxInterpreter
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
                 Run(line);
-                HadError = false;
+                hadError = false;
             }
         }
 
@@ -70,9 +70,15 @@ namespace LoxInterpreter
             List<Stmt> statements = parser.Parse();
 
             // Stop if there was a syntax error.
-            if (HadError) return;
+            if (hadError) return;
 
-            Interpreter.Interpret(statements);
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(statements);
+
+            // Stop if there was a resolution error.
+            if (hadError) return;
+
+            interpreter.Interpret(statements);
         }
 
         public static void Error(int line, string message)
@@ -83,7 +89,7 @@ namespace LoxInterpreter
         private static void Report(int line, string where, string message)
         {
             Console.Error.WriteLine($"[line {line}] Error{where}: {message}");
-            HadError = true;
+            hadError = true;
         }
 
         public static void Error(Token token, string message)
@@ -101,7 +107,7 @@ namespace LoxInterpreter
         public static void RuntimeError(RuntimeError error)
         {
             Console.Error.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
-            HadRuntimeError = true;
+            hadRuntimeError = true;
         }
     }
 }
