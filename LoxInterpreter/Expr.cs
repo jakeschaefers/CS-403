@@ -138,15 +138,15 @@ namespace LoxInterpreter
 
         public class Call : Expr
         {
-            public readonly Expr Callee;
-            public readonly Token Paren;
-            public readonly List<Expr> Arguments;
+            public readonly Expr callee;
+            public readonly Token paren;
+            public readonly List<Expr> arguments;
 
             public Call(Expr callee, Token paren, List<Expr> arguments)
             {
-                Callee = callee;
-                Paren = paren;
-                Arguments = arguments;
+                this.callee = callee;
+                this.paren = paren;
+                this.arguments = arguments;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -157,13 +157,13 @@ namespace LoxInterpreter
 
         public class Get : Expr
         {
-            public readonly Expr Object;
-            public readonly Token Name;
+            public readonly Expr obj;
+            public readonly Token name;
 
             public Get(Expr obj, Token name)
             {
-                Object = obj;
-                Name = name;
+                this.obj = obj;
+                this.name = name;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -174,15 +174,15 @@ namespace LoxInterpreter
 
         public class Set : Expr
         {
-            public readonly Expr Object;
-            public readonly Token Name;
-            public readonly Expr Value;
+            public readonly Expr obj;
+            public readonly Token name;
+            public readonly Expr value;
 
             public Set(Expr obj, Token name, Expr value)
             {
-                Object = obj;
-                Name = name;
-                Value = value;
+                this.obj = obj;
+                this.name = name;
+                this.value = value;
             }
 
             public override R Accept<R>(Visitor<R> visitor)
@@ -193,11 +193,11 @@ namespace LoxInterpreter
 
         public class This : Expr
         {
-            public readonly Token Keyword;
+            public readonly Token keyword;
 
             public This(Token keyword)
             {
-                Keyword = keyword;
+                this.keyword = keyword;
             }
 
             public override R Accept<R>(Visitor<R> visitor)

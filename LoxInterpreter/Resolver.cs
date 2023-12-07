@@ -43,7 +43,7 @@ namespace LoxInterpreter
             Define(stmt.name);
 
             BeginScope();
-            scopes.Peek()["this"] = true;
+            scopes.Peek().Add("this", true);
 
             foreach (Stmt.Function method in stmt.methods)
             {
@@ -134,9 +134,9 @@ namespace LoxInterpreter
 
         public object VisitCallExpr(Expr.Call expr)
         {
-            Resolve(expr.Callee);
+            Resolve(expr.callee);
 
-            foreach (Expr argument in expr.Arguments)
+            foreach (Expr argument in expr.arguments)
             {
                 Resolve(argument);
             }
@@ -145,7 +145,7 @@ namespace LoxInterpreter
 
         public object VisitGetExpr(Expr.Get expr)
         {
-            Resolve(expr.Object);
+            Resolve(expr.obj);
             return null;
         }
 
@@ -169,17 +169,21 @@ namespace LoxInterpreter
 
         public object VisitSetExpr(Expr.Set expr)
         {
-            Resolve(expr.Value);
-            Resolve(expr.Object);
+            Resolve(expr.value);
+            Resolve(expr.obj);
             return null;
         }
 
         public object VisitThisExpr(Expr.This expr)
         {
+            
             if (currentClass == ClassType.NONE)
             {
-                Lox.Error(expr.Keyword, "Can't use 'this' outside of a class.");
+                Lox.Error(expr.keyword, "Can't use 'this' outside of a class.");
+                return null;
             }
+
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 

@@ -252,7 +252,7 @@ namespace LoxInterpreter
                 else if (expr is Expr.Get)
                 {
                     Expr.Get get = (Expr.Get)expr;
-                    return new Expr.Set(get.Object, get.Name, value);
+                    return new Expr.Set(get.obj, get.name, value);
                 }
 
                 Error(equals, "Invalid assignment target.");

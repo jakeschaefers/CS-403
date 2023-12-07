@@ -2,7 +2,7 @@ namespace LoxInterpreter
 {
     public class LoxInstance
     {
-        private LoxClass klass;
+        private readonly LoxClass klass;
         private readonly Dictionary<string, object> fields = new Dictionary<string, object>();
 
         public LoxInstance(LoxClass klass)
