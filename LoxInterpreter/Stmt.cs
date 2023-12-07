@@ -9,6 +9,8 @@ namespace LoxInterpreter
             void VisitPrintStmt(Print Stmt);
             void VisitVarStmt(Var stmt);
             void VisitBlockStmt(Block stmt);
+            void VisitIfStmt(If stmt);
+            void VisitWhileStmt(While stmt);
         }
 
         public abstract void Accept(Visitor visitor);
@@ -72,6 +74,42 @@ namespace LoxInterpreter
             public override void Accept(Visitor visitor)
             {
                 visitor.VisitBlockStmt(this);
+            }
+        }
+
+        public class If : Stmt
+        {
+            public readonly Expr condition;
+            public readonly Stmt thenBranch;
+            public readonly Stmt elseBranch;
+
+            public If(Expr condition, Stmt thenBranch, Stmt elseBranch)
+            {
+                this.condition = condition;
+                this.thenBranch = thenBranch;
+                this.elseBranch = elseBranch;
+            }
+
+            public override void Accept(Visitor visitor)
+            {
+                visitor.VisitIfStmt(this);
+            }
+        }
+
+        public class While : Stmt
+        {
+            public readonly Expr condition;
+            public readonly Stmt body;
+
+            public While(Expr condition, Stmt body)
+            {
+                this.condition = condition;
+                this.body = body;
+            }
+
+            public override void Accept(Visitor visitor)
+            {
+                visitor.VisitWhileStmt(this);
             }
         }
     }

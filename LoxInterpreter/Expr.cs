@@ -10,6 +10,7 @@ namespace LoxInterpreter
             R VisitUnaryExpr(Unary expr);
             R VisitVariableExpr(Variable expr);
             R VisitAssignExpr(Assign expr);
+            R VisitLogicalExpr(Logical expr);
         }
 
         public abstract R Accept<R>(Visitor<R> visitor);
@@ -109,6 +110,25 @@ namespace LoxInterpreter
             public override R Accept<R>(Visitor<R> visitor)
             {
                 return visitor.VisitAssignExpr(this);
+            }
+        }
+
+        public class Logical : Expr
+        {
+            public readonly Expr left;
+            public readonly Token operatorToken;
+            public readonly Expr right;
+
+            public Logical(Expr left, Token operatorToken, Expr right)
+            {
+                this.left = left;
+                this.operatorToken = operatorToken;
+                this.right = right;
+            }
+
+            public override R Accept<R>(Visitor<R> visitor)
+            {
+                return visitor.VisitLogicalExpr(this);
             }
         }
 
