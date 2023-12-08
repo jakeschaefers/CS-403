@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\School\\Computer Science 403\\LoxInterpreter\\LoxInterpreter.csproj": {}
+    "D:\\School\\Computer Science 403\\CS-403\\LoxInterpreter\\LoxInterpreter.csproj": {}
   },
   "projects": {
-    "D:\\School\\Computer Science 403\\LoxInterpreter\\LoxInterpreter.csproj": {
+    "D:\\School\\Computer Science 403\\CS-403\\LoxInterpreter\\LoxInterpreter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\School\\Computer Science 403\\LoxInterpreter\\LoxInterpreter.csproj",
+        "projectUniqueName": "D:\\School\\Computer Science 403\\CS-403\\LoxInterpreter\\LoxInterpreter.csproj",
         "projectName": "LoxInterpreter",
-        "projectPath": "D:\\School\\Computer Science 403\\LoxInterpreter\\LoxInterpreter.csproj",
+        "projectPath": "D:\\School\\Computer Science 403\\CS-403\\LoxInterpreter\\LoxInterpreter.csproj",
         "packagesPath": "C:\\Users\\Jakes\\.nuget\\packages\\",
-        "outputPath": "D:\\School\\Computer Science 403\\LoxInterpreter\\obj\\",
+        "outputPath": "D:\\School\\Computer Science 403\\CS-403\\LoxInterpreter\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Jakes\\AppData\\Roaming\\NuGet\\NuGet.Config"
