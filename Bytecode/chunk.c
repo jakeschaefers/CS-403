@@ -22,7 +22,7 @@ void freeChunk(Chunk *chunk)
     initChunk(chunk);
 }
 
-void writeChunk(Chunk* chunk, uint8_t byte, int line)
+void writeChunk(Chunk *chunk, uint8_t byte, int line)
 {
     if (chunk->capacity < chunk->count + 1)
     {
