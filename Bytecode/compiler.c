@@ -112,7 +112,6 @@ static void errorAtCurrent(const char *message)
 static void advance()
 {
     parser.previous = parser.current;
-
     for (;;)
     {
         parser.current = scanToken();
@@ -793,7 +792,7 @@ static void returnStatement()
     {
         error("Can't return from top-level code.");
     }
-    
+
     if (match(TOKEN_SEMICOLON))
     {
         emitReturn();
