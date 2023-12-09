@@ -1,0 +1,84 @@
+// Chapter 4: Scanning
+// Test various types of tokens: operators, literals, and keywords
+print "Scanning test:";
+print 1 + 2 - 3 * 4 / 5; // Arithmetic operators
+print !true == false; // Logical operators
+var language = "Lox"; // Variable declaration
+print language; // Identifier
+
+// Chapter 5: Representing Code
+// Internal representation (AST) - can't be directly tested in a script
+
+// Chapter 6: Parsing Expressions
+print "Parsing Expressions test:";
+print (1 + 2) * (3 - 4) / 5; // Grouping and precedence
+print 5 > 3 == !(1 == 2); // Comparison and logical operators
+
+// Chapter 7: Evaluating Expressions
+print "Evaluating Expressions test:";
+var a = 3;
+var b = 4;
+print a * b; // Variable evaluation
+
+// Static and dynamic typing test
+// Lox is dynamically typed - this can be demonstrated but not "tested" per se.
+
+// Chapter 8: Statements and State
+print "Statements and State test:";
+var stateTest = "This is Lox";
+print stateTest; // Variable declaration and print statement
+
+// Implicit variable declaration test
+// In Lox, variables must be declared with 'var'.
+
+// Chapter 9: Control Flow
+print "Control Flow test:";
+if (true) {
+    print "This is true";
+} else {
+    print "This is false";
+}
+
+// While loop
+var counter = 1;
+while (counter <= 3) {
+    print counter;
+    counter = counter + 1;
+}
+
+// Chapter 10: Functions
+print "Functions test:";
+fun greet(name) {
+    print "Hello, " + name;
+}
+greet("Lox"); // Function call
+
+fun add(x, y) {
+    return x + y;
+}
+print add(5, 10); // Function with return value
+
+
+////////////////////////////
+//     ~~ OUTPUT ~~       //
+////////////////////////////
+
+// Scanning test:
+// 0.6000000000000001
+// True
+// Lox
+// Parsing Expressions test:
+// -0.6
+// True
+// Evaluating Expressions test:
+// 12
+// Statements and State test:
+// This is Lox
+// Control Flow test:
+// This is true
+// 1
+// 2
+// 3
+// Functions test:
+// Hello, Lox
+// 15
