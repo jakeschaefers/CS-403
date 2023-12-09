@@ -382,7 +382,7 @@ namespace LoxInterpreter
 
             if (Match(TokenType.NUMBER, TokenType.STRING))
             {
-                return new Expr.Literal(Previous().Literal);
+                return new Expr.Literal(Previous().literal);
             }
 
             if (Match(TokenType.IDENTIFIER))

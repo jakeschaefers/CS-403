@@ -1,29 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 
 namespace LoxInterpreter
 {
     public class Token
     {
-        public TokenType Type { get; }
-        public string Lexeme { get; }
-        public object Literal { get; }
-        public int Line { get; }
+        public readonly TokenType type;
+        public readonly string lexeme;
+        public readonly object literal;
+        public readonly int line;
 
         public Token(TokenType type, string lexeme, object literal, int line)
         {
-            Type = type;
-            Lexeme = lexeme;
-            Literal = literal;
-            Line = line;
+            this.type = type;
+            this.lexeme = lexeme;
+            this.literal = literal;
+            this.line = line;
         }
 
         public override string ToString()
         {
-            return Type + " " + Lexeme + " " + Literal;
+            return type + " " + lexeme + " " + literal;
         }
     }
 

@@ -304,21 +304,21 @@ namespace LoxInterpreter
     class Token
     {
         public TokenType Type { get; }
-        public string Lexeme { get; }
-        public object Literal { get; }
-        public int Line { get; }
+        public string lexeme { get; }
+        public object literal { get; }
+        public int line { get; }
 
         public Token(TokenType type, string lexeme, object literal, int line)
         {
             Type = type;
-            Lexeme = lexeme;
-            Literal = literal;
-            Line = line;
+            lexeme = lexeme;
+            literal = literal;
+            line = line;
         }
 
         public override string ToString()
         {
-            return $"{Type} {Lexeme} {Literal}";
+            return $"{Type} {lexeme} {literal}";
         }
     }
 
@@ -430,7 +430,7 @@ namespace LoxInterpreter
     {
         public string VisitBinaryExpr(Expr.Binary expr)
         {
-            return Parenthesize(expr.Operator.Lexeme, expr.Left, expr.Right);
+            return Parenthesize(expr.Operator.lexeme, expr.Left, expr.Right);
         }
 
         public string VisitGroupingExpr(Expr.Grouping expr)
@@ -446,7 +446,7 @@ namespace LoxInterpreter
 
         public string VisitUnaryExpr(Expr.Unary expr)
         {
-            return Parenthesize(expr.Operator.Lexeme, expr.Right);
+            return Parenthesize(expr.Operator.lexeme, expr.Right);
         }
 
         private string Parenthesize(string name, params Expr[] exprs)

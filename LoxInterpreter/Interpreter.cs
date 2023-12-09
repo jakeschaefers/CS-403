@@ -8,6 +8,8 @@ namespace LoxInterpreter
     {
         public readonly Environment globals = new Environment();
         private Environment environment;
+        private readonly Dictionary<Expr, int> locals = new Dictionary<Expr, int>();
+
 
         public Interpreter()
         {
@@ -131,6 +133,11 @@ namespace LoxInterpreter
             stmt.Accept(this);
         }
 
+        public void Resolve(Expr expr, int depth)
+        {
+            locals[expr] = depth;
+        }
+
         public void ExecuteBlock(List<Stmt> statements, Environment environment)
         {
             Environment previous = this.environment;
@@ -174,7 +181,7 @@ namespace LoxInterpreter
         public void VisitFunctionStmt(Stmt.Function stmt)
         {
             LoxFunction function = new LoxFunction(stmt, environment);
-            environment.Define(stmt.name.Lexeme, function);
+            environment.Define(stmt.name.lexeme, function);
         }
 
         public void VisitPrintStmt(Stmt.Print stmt)
@@ -199,7 +206,7 @@ namespace LoxInterpreter
                 value = Evaluate(stmt.initializer);
             }
 
-            environment.Define(stmt.name.Lexeme, value);
+            environment.Define(stmt.name.lexeme, value);
         }
 
         public void VisitWhileStmt(Stmt.While stmt)
@@ -213,13 +220,36 @@ namespace LoxInterpreter
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
-            environment.Assign(expr.name, value);
+
+            int distance = locals[expr];
+            if (distance != null)
+            {
+                environment.AssignAt(distance, expr.name, value);
+            }
+            else
+            {
+                globals.Assign(expr.name, value);
+            }
+
             return value;
         }
 
         public object VisitVariableExpr(Expr.Variable expr)
         {
             return environment.Get(expr.Name);
+        }
+
+        private object LookUpVariable(Token name, Expr expr)
+        {
+            int distance = locals[expr];
+            if (distance != null)
+            {
+                return environment.GetAt(distance, name.lexeme);
+            }
+            else
+            {
+                return globals.Get(name);
+            }
         }
 
         public object VisitBinaryExpr(Expr.Binary expr)
@@ -291,7 +321,7 @@ namespace LoxInterpreter
             if (arguments.Count != function.Arity())
             {
                 throw new RuntimeError(expr.Paren, "Expected" +
-                    function.Arity() + " arguments but got " + 
+                    function.Arity() + " arguments but got " +
                     arguments.Count + ".");
             }
 
@@ -304,6 +334,6 @@ namespace LoxInterpreter
             throw new RuntimeError(oper, "Operands must be numbers.");
         }
 
-        
+
     }
 }

@@ -13,7 +13,7 @@ namespace LoxInterpreter
 
         public override string ToString()
         {
-            return "<fn " + declaration.name.Lexeme + ">";
+            return "<fn " + declaration.name.lexeme + ">";
         }
 
         public int Arity()
@@ -26,11 +26,11 @@ namespace LoxInterpreter
             Environment environment = new Environment(closure);
             for (int i = 0; i < declaration.parameters.Count; i++)
             {
-                environment.Define(declaration.parameters[i].Lexeme, arguments[i]);
+                environment.Define(declaration.parameters[i].lexeme, arguments[i]);
             }
 
             try
-            {    
+            {
                 interpreter.ExecuteBlock(declaration.body, environment);
             }
             catch (Return returnValue)

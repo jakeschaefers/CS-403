@@ -1,0 +1,710 @@
+// Lox Test File for Chapter 24
+
+// Print statements
+print "Hello, Lox!";
+
+// Arithmetic and Expressions
+var a = 15;
+var b = 5;
+print a + b;  // 20
+print a * (b - 3);  // 30
+
+// Logical operators
+print true and false;  // false
+print true or false;   // true
+print !true;        // false
+
+// Global Variables
+var globalVar = "I am global";
+print globalVar;
+
+// Local Variables in a Block
+{
+    var localVar = "I am local";
+    print localVar;
+}
+
+// Functions and Calls
+fun add(x, y) {
+    return x + y;
+}
+print add(3, 4);  // 7
+
+// More Complex Function
+fun factorial(n) {
+    if (n == 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+print factorial(5);  // 120
+
+// Strings
+var greeting = "Hello";
+var name = "World";
+print greeting + " " + name + "!";  // Hello World!
+
+// Conditional Statements
+if (a > b) {
+    print "a is greater than b";
+} else {
+    print "a is not greater than b";
+}
+
+// Loops
+for (var i = 0; i < 3; i = i + 1) {
+    print i;
+}
+
+// While Loop
+var count = 3;
+while (count > 0) {
+    print count;
+    count = count - 1;
+}
+
+// Global Variables Update
+globalVar = "Updated value";
+print globalVar;
+
+
+
+////////////////////////////
+//     ~~ OUTPUT ~~       //
+////////////////////////////
+
+// == add ==
+// 0000   29 OP_GET_LOCAL        1
+// 0002    | OP_GET_LOCAL        2
+// 0004    | OP_ADD
+// 0005    | OP_RETURN
+// 0006   30 OP_NIL
+// 0007    | OP_RETURN
+// == factorial ==
+// 0000   35 OP_GET_LOCAL        1
+// 0002    | OP_CONSTANT         0 '1'
+// 0004    | OP_EQUAL
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+// 0008    | OP_POP
+// 0009   36 OP_CONSTANT         1 '1'
+// 0011    | OP_RETURN
+// 0012   37 OP_JUMP            12 -> 16
+// 0015    | OP_POP
+// 0016   38 OP_GET_LOCAL        1
+// 0018    | OP_GET_GLOBAL       2 'factorial'
+// 0020    | OP_GET_LOCAL        1
+// 0022    | OP_CONSTANT         3 '1'
+// 0024    | OP_SUBTRACT
+// 0025    | OP_CALL             1
+// 0027    | OP_MULTIPLY
+// 0028    | OP_RETURN
+// 0029   39 OP_NIL
+// 0030    | OP_RETURN
+// == <script> ==
+// 0000    4 OP_CONSTANT         0 'Hello, Lox!'
+// 0002    | OP_PRINT
+// 0003    7 OP_CONSTANT         2 '15'
+// 0005    | OP_DEFINE_GLOBAL    1 'a'
+// 0007    8 OP_CONSTANT         4 '5'
+// 0009    | OP_DEFINE_GLOBAL    3 'b'
+// 0011    9 OP_GET_GLOBAL       5 'a'
+// 0013    | OP_GET_GLOBAL       6 'b'
+// 0015    | OP_ADD
+// 0016    | OP_PRINT
+// 0017   10 OP_GET_GLOBAL       7 'a'
+// 0019    | OP_GET_GLOBAL       8 'b'
+// 0021    | OP_CONSTANT         9 '3'
+// 0023    | OP_SUBTRACT
+// 0024    | OP_MULTIPLY
+// 0025    | OP_PRINT
+// 0026   13 OP_TRUE
+// 0027    | OP_JUMP_IF_FALSE   27 -> 32
+// 0030    | OP_POP
+// 0031    | OP_FALSE
+// 0032    | OP_PRINT
+// 0033   14 OP_TRUE
+// 0034    | OP_JUMP_IF_FALSE   34 -> 40
+// 0037    | OP_JUMP            37 -> 42
+// 0040    | OP_POP
+// 0041    | OP_FALSE
+// 0042    | OP_PRINT
+// 0043   15 OP_TRUE
+// 0044    | OP_NOT
+// 0045    | OP_PRINT
+// 0046   18 OP_CONSTANT        11 'I am global'
+// 0048    | OP_DEFINE_GLOBAL   10 'globalVar'
+// 0050   19 OP_GET_GLOBAL      12 'globalVar'
+// 0052    | OP_PRINT
+// 0053   23 OP_CONSTANT        13 'I am local'
+// 0055   24 OP_GET_LOCAL        1
+// 0057    | OP_PRINT
+// 0058   25 OP_POP
+// 0059   30 OP_CONSTANT        15 '<fn add>'
+// 0061    | OP_DEFINE_GLOBAL   14 'add'
+// 0063   31 OP_GET_GLOBAL      16 'add'
+// 0065    | OP_CONSTANT        17 '3'
+// 0067    | OP_CONSTANT        18 '4'
+// 0069    | OP_CALL             2
+// 0071    | OP_PRINT
+// 0072   39 OP_CONSTANT        20 '<fn factorial>'
+// 0074    | OP_DEFINE_GLOBAL   19 'factorial'
+// 0076   40 OP_GET_GLOBAL      21 'factorial'
+// 0078    | OP_CONSTANT        22 '5'
+// 0080    | OP_CALL             1
+// 0082    | OP_PRINT
+// 0083   43 OP_CONSTANT        24 'Hello'
+// 0085    | OP_DEFINE_GLOBAL   23 'greeting'
+// 0087   44 OP_CONSTANT        26 'World'
+// 0089    | OP_DEFINE_GLOBAL   25 'name'
+// 0091   45 OP_GET_GLOBAL      27 'greeting'
+// 0093    | OP_CONSTANT        28 ' '
+// 0095    | OP_ADD
+// 0096    | OP_GET_GLOBAL      29 'name'
+// 0098    | OP_ADD
+// 0099    | OP_CONSTANT        30 '!'
+// 0101    | OP_ADD
+// 0102    | OP_PRINT
+// 0103   48 OP_GET_GLOBAL      31 'a'
+// 0105    | OP_GET_GLOBAL      32 'b'
+// 0107    | OP_GREATER
+// 0108    | OP_JUMP_IF_FALSE  108 -> 118
+// 0111    | OP_POP
+// 0112   49 OP_CONSTANT        33 'a is greater than b'
+// 0114    | OP_PRINT
+// 0115   50 OP_JUMP           115 -> 122
+// 0118    | OP_POP
+// 0119   51 OP_CONSTANT        34 'a is not greater than b'
+// 0121    | OP_PRINT
+// 0122   55 OP_CONSTANT        35 '0'
+// 0124    | OP_GET_LOCAL        1
+// 0126    | OP_CONSTANT        36 '3'
+// 0128    | OP_LESS
+// 0129    | OP_JUMP_IF_FALSE  129 -> 153
+// 0132    | OP_POP
+// 0133    | OP_JUMP           133 -> 147
+// 0136    | OP_GET_LOCAL        1
+// 0138    | OP_CONSTANT        37 '1'
+// 0140    | OP_ADD
+// 0141    | OP_SET_LOCAL        1
+// 0143    | OP_POP
+// 0144    | OP_LOOP           144 -> 124
+// 0147   56 OP_GET_LOCAL        1
+// 0149    | OP_PRINT
+// 0150   57 OP_LOOP           150 -> 136
+// 0153    | OP_POP
+// 0154    | OP_POP
+// 0155   60 OP_CONSTANT        39 '3'
+// 0157    | OP_DEFINE_GLOBAL   38 'count'
+// 0159   61 OP_GET_GLOBAL      40 'count'
+// 0161    | OP_CONSTANT        41 '0'
+// 0163    | OP_GREATER
+// 0164    | OP_JUMP_IF_FALSE  164 -> 182
+// 0167    | OP_POP
+// 0168   62 OP_GET_GLOBAL      42 'count'
+// 0170    | OP_PRINT
+// 0171   63 OP_GET_GLOBAL      44 'count'
+// 0173    | OP_CONSTANT        45 '1'
+// 0175    | OP_SUBTRACT
+// 0176    | OP_SET_GLOBAL      43 'count'
+// 0178    | OP_POP
+// 0179   64 OP_LOOP           179 -> 159
+// 0182    | OP_POP
+// 0183   67 OP_CONSTANT        47 'Updated value'
+// 0185    | OP_SET_GLOBAL      46 'globalVar'
+// 0187    | OP_POP
+// 0188   68 OP_GET_GLOBAL      48 'globalVar'
+// 0190    | OP_PRINT
+// 0191   69 OP_NIL
+// 0192    | OP_RETURN
+//           [ <script> ]
+// 0000    4 OP_CONSTANT         0 'Hello, Lox!'
+//           [ <script> ][ Hello, Lox! ]
+// 0002    | OP_PRINT
+// Hello, Lox!
+//           [ <script> ]
+// 0003    7 OP_CONSTANT         2 '15'
+//           [ <script> ][ 15 ]
+// 0005    | OP_DEFINE_GLOBAL    1 'a'
+//           [ <script> ]
+// 0007    8 OP_CONSTANT         4 '5'
+//           [ <script> ][ 5 ]
+// 0009    | OP_DEFINE_GLOBAL    3 'b'
+//           [ <script> ]
+// 0011    9 OP_GET_GLOBAL       5 'a'
+//           [ <script> ][ 15 ]
+// 0013    | OP_GET_GLOBAL       6 'b'
+//           [ <script> ][ 15 ][ 5 ]
+// 0015    | OP_ADD
+//           [ <script> ][ 20 ]
+// 0016    | OP_PRINT
+// 20
+//           [ <script> ]
+// 0017   10 OP_GET_GLOBAL       7 'a'
+//           [ <script> ][ 15 ]
+// 0019    | OP_GET_GLOBAL       8 'b'
+//           [ <script> ][ 15 ][ 5 ]
+// 0021    | OP_CONSTANT         9 '3'
+//           [ <script> ][ 15 ][ 5 ][ 3 ]
+// 0023    | OP_SUBTRACT
+//           [ <script> ][ 15 ][ 2 ]
+// 0024    | OP_MULTIPLY
+//           [ <script> ][ 30 ]
+// 0025    | OP_PRINT
+// 30
+//           [ <script> ]
+// 0026   13 OP_TRUE
+//           [ <script> ][ true ]
+// 0027    | OP_JUMP_IF_FALSE   27 -> 32
+//           [ <script> ][ true ]
+// 0030    | OP_POP
+//           [ <script> ]
+// 0031    | OP_FALSE
+//           [ <script> ][ false ]
+// 0032    | OP_PRINT
+// false
+//           [ <script> ]
+// 0033   14 OP_TRUE
+//           [ <script> ][ true ]
+// 0034    | OP_JUMP_IF_FALSE   34 -> 40
+//           [ <script> ][ true ]
+// 0037    | OP_JUMP            37 -> 42
+//           [ <script> ][ true ]
+// 0042    | OP_PRINT
+// true
+//           [ <script> ]
+// 0043   15 OP_TRUE
+//           [ <script> ][ true ]
+// 0044    | OP_NOT
+//           [ <script> ][ false ]
+// 0045    | OP_PRINT
+// false
+//           [ <script> ]
+// 0046   18 OP_CONSTANT        11 'I am global'
+//           [ <script> ][ I am global ]
+// 0048    | OP_DEFINE_GLOBAL   10 'globalVar'
+//           [ <script> ]
+// 0050   19 OP_GET_GLOBAL      12 'globalVar'
+//           [ <script> ][ I am global ]
+// 0052    | OP_PRINT
+// I am global
+//           [ <script> ]
+// 0053   23 OP_CONSTANT        13 'I am local'
+//           [ <script> ][ I am local ]
+// 0055   24 OP_GET_LOCAL        1
+//           [ <script> ][ I am local ][ I am local ]
+// 0057    | OP_PRINT
+// I am local
+//           [ <script> ][ I am local ]
+// 0058   25 OP_POP
+//           [ <script> ]
+// 0059   30 OP_CONSTANT        15 '<fn add>'
+//           [ <script> ][ <fn add> ]
+// 0061    | OP_DEFINE_GLOBAL   14 'add'
+//           [ <script> ]
+// 0063   31 OP_GET_GLOBAL      16 'add'
+//           [ <script> ][ <fn add> ]
+// 0065    | OP_CONSTANT        17 '3'
+//           [ <script> ][ <fn add> ][ 3 ]
+// 0067    | OP_CONSTANT        18 '4'
+//           [ <script> ][ <fn add> ][ 3 ][ 4 ]
+// 0069    | OP_CALL             2
+//           [ <script> ][ <fn add> ][ 3 ][ 4 ]
+// 0000   29 OP_GET_LOCAL        1
+//           [ <script> ][ <fn add> ][ 3 ][ 4 ][ 3 ]
+// 0002    | OP_GET_LOCAL        2
+//           [ <script> ][ <fn add> ][ 3 ][ 4 ][ 3 ][ 4 ]
+// 0004    | OP_ADD
+//           [ <script> ][ <fn add> ][ 3 ][ 4 ][ 7 ]
+// 0005    | OP_RETURN
+//           [ <script> ][ 7 ]
+// 0071    | OP_PRINT
+// 7
+//           [ <script> ]
+// 0072   39 OP_CONSTANT        20 '<fn factorial>'
+//           [ <script> ][ <fn factorial> ]
+// 0074    | OP_DEFINE_GLOBAL   19 'factorial'
+//           [ <script> ]
+// 0076   40 OP_GET_GLOBAL      21 'factorial'
+//           [ <script> ][ <fn factorial> ]
+// 0078    | OP_CONSTANT        22 '5'
+//           [ <script> ][ <fn factorial> ][ 5 ]
+// 0080    | OP_CALL             1
+//           [ <script> ][ <fn factorial> ][ 5 ]
+// 0000   35 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ]
+// 0002    | OP_CONSTANT         0 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ 1 ]
+// 0004    | OP_EQUAL
+//           [ <script> ][ <fn factorial> ][ 5 ][ false ]
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+//           [ <script> ][ <fn factorial> ][ 5 ][ false ]
+// 0015    | OP_POP
+//           [ <script> ][ <fn factorial> ][ 5 ]
+// 0016   38 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ]
+// 0018    | OP_GET_GLOBAL       2 'factorial'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ]
+// 0020    | OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 5 ]
+// 0022    | OP_CONSTANT         3 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 5 ][ 1 ]
+// 0024    | OP_SUBTRACT
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ]
+// 0025    | OP_CALL             1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ]
+// 0000   35 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ]
+// 0002    | OP_CONSTANT         0 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ 1 ]
+// 0004    | OP_EQUAL
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ false ]
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ false ]
+// 0015    | OP_POP
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ]
+// 0016   38 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ]
+// 0018    | OP_GET_GLOBAL       2 'factorial'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ]
+// 0020    | OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 4 ]
+// 0022    | OP_CONSTANT         3 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 4 ][ 1 ]
+// 0024    | OP_SUBTRACT
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ]
+// 0025    | OP_CALL             1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ]
+// 0000   35 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ]
+// 0002    | OP_CONSTANT         0 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ 1 ]
+// 0004    | OP_EQUAL
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ false ]
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ false ]
+// 0015    | OP_POP
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ]
+// 0016   38 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ]
+// 0018    | OP_GET_GLOBAL       2 'factorial'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ]
+// 0020    | OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 3 ]
+// 0022    | OP_CONSTANT         3 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 3 ][ 1 ]
+// 0024    | OP_SUBTRACT
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ]
+// 0025    | OP_CALL             1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ]
+// 0000   35 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ]
+// 0002    | OP_CONSTANT         0 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ 1 ]
+// 0004    | OP_EQUAL
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ false ]
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ false ]
+// 0015    | OP_POP
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ]
+// 0016   38 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ]
+// 0018    | OP_GET_GLOBAL       2 'factorial'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ]
+// 0020    | OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 2 ]
+// 0022    | OP_CONSTANT         3 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 2 ][ 1 ]
+// 0024    | OP_SUBTRACT
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ]
+// 0025    | OP_CALL             1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ]
+// 0000   35 OP_GET_LOCAL        1
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ][ 1 ]
+// 0002    | OP_CONSTANT         0 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ][ 1 ][ 1 ]
+// 0004    | OP_EQUAL
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ][ true ]
+// 0005    | OP_JUMP_IF_FALSE    5 -> 15
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ][ true ]
+// 0008    | OP_POP
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ]
+// 0009   36 OP_CONSTANT         1 '1'
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ <fn factorial> ][ 1 ][ 1 ]
+// 0011    | OP_RETURN
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ][ 1 ]
+// 0027    | OP_MULTIPLY
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ <fn factorial> ][ 2 ][ 2 ]
+// 0028    | OP_RETURN
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 3 ][ 2 ]
+// 0027    | OP_MULTIPLY
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ <fn factorial> ][ 3 ][ 6 ]
+// 0028    | OP_RETURN
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 4 ][ 6 ]
+// 0027    | OP_MULTIPLY
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ <fn factorial> ][ 4 ][ 24 ]
+// 0028    | OP_RETURN
+//           [ <script> ][ <fn factorial> ][ 5 ][ 5 ][ 24 ]
+// 0027    | OP_MULTIPLY
+//           [ <script> ][ <fn factorial> ][ 5 ][ 120 ]
+// 0028    | OP_RETURN
+//           [ <script> ][ 120 ]
+// 0082    | OP_PRINT
+// 120
+//           [ <script> ]
+// 0083   43 OP_CONSTANT        24 'Hello'
+//           [ <script> ][ Hello ]
+// 0085    | OP_DEFINE_GLOBAL   23 'greeting'
+//           [ <script> ]
+// 0087   44 OP_CONSTANT        26 'World'
+//           [ <script> ][ World ]
+// 0089    | OP_DEFINE_GLOBAL   25 'name'
+//           [ <script> ]
+// 0091   45 OP_GET_GLOBAL      27 'greeting'
+//           [ <script> ][ Hello ]
+// 0093    | OP_CONSTANT        28 ' '
+//           [ <script> ][ Hello ][   ]
+// 0095    | OP_ADD
+//           [ <script> ][ Hello  ]
+// 0096    | OP_GET_GLOBAL      29 'name'
+//           [ <script> ][ Hello  ][ World ]
+// 0098    | OP_ADD
+//           [ <script> ][ Hello World ]
+// 0099    | OP_CONSTANT        30 '!'
+//           [ <script> ][ Hello World ][ ! ]
+// 0101    | OP_ADD
+//           [ <script> ][ Hello World! ]
+// 0102    | OP_PRINT
+// Hello World!
+//           [ <script> ]
+// 0103   48 OP_GET_GLOBAL      31 'a'
+//           [ <script> ][ 15 ]
+// 0105    | OP_GET_GLOBAL      32 'b'
+//           [ <script> ][ 15 ][ 5 ]
+// 0107    | OP_GREATER
+//           [ <script> ][ true ]
+// 0108    | OP_JUMP_IF_FALSE  108 -> 118
+//           [ <script> ][ true ]
+// 0111    | OP_POP
+//           [ <script> ]
+// 0112   49 OP_CONSTANT        33 'a is greater than b'
+//           [ <script> ][ a is greater than b ]
+// 0114    | OP_PRINT
+// a is greater than b
+//           [ <script> ]
+// 0115   50 OP_JUMP           115 -> 122
+//           [ <script> ]
+// 0122   55 OP_CONSTANT        35 '0'
+//           [ <script> ][ 0 ]
+// 0124    | OP_GET_LOCAL        1
+//           [ <script> ][ 0 ][ 0 ]
+// 0126    | OP_CONSTANT        36 '3'
+//           [ <script> ][ 0 ][ 0 ][ 3 ]
+// 0128    | OP_LESS
+//           [ <script> ][ 0 ][ true ]
+// 0129    | OP_JUMP_IF_FALSE  129 -> 153
+//           [ <script> ][ 0 ][ true ]
+// 0132    | OP_POP
+//           [ <script> ][ 0 ]
+// 0133    | OP_JUMP           133 -> 147
+//           [ <script> ][ 0 ]
+// 0147   56 OP_GET_LOCAL        1
+//           [ <script> ][ 0 ][ 0 ]
+// 0149    | OP_PRINT
+// 0
+//           [ <script> ][ 0 ]
+// 0150   57 OP_LOOP           150 -> 136
+//           [ <script> ][ 0 ]
+// 0136    | OP_GET_LOCAL        1
+//           [ <script> ][ 0 ][ 0 ]
+// 0138    | OP_CONSTANT        37 '1'
+//           [ <script> ][ 0 ][ 0 ][ 1 ]
+// 0140    | OP_ADD
+//           [ <script> ][ 0 ][ 1 ]
+// 0141    | OP_SET_LOCAL        1
+//           [ <script> ][ 1 ][ 1 ]
+// 0143    | OP_POP
+//           [ <script> ][ 1 ]
+// 0144    | OP_LOOP           144 -> 124
+//           [ <script> ][ 1 ]
+// 0124    | OP_GET_LOCAL        1
+//           [ <script> ][ 1 ][ 1 ]
+// 0126    | OP_CONSTANT        36 '3'
+//           [ <script> ][ 1 ][ 1 ][ 3 ]
+// 0128    | OP_LESS
+//           [ <script> ][ 1 ][ true ]
+// 0129    | OP_JUMP_IF_FALSE  129 -> 153
+//           [ <script> ][ 1 ][ true ]
+// 0132    | OP_POP
+//           [ <script> ][ 1 ]
+// 0133    | OP_JUMP           133 -> 147
+//           [ <script> ][ 1 ]
+// 0147   56 OP_GET_LOCAL        1
+//           [ <script> ][ 1 ][ 1 ]
+// 0149    | OP_PRINT
+// 1
+//           [ <script> ][ 1 ]
+// 0150   57 OP_LOOP           150 -> 136
+//           [ <script> ][ 1 ]
+// 0136    | OP_GET_LOCAL        1
+//           [ <script> ][ 1 ][ 1 ]
+// 0138    | OP_CONSTANT        37 '1'
+//           [ <script> ][ 1 ][ 1 ][ 1 ]
+// 0140    | OP_ADD
+//           [ <script> ][ 1 ][ 2 ]
+// 0141    | OP_SET_LOCAL        1
+//           [ <script> ][ 2 ][ 2 ]
+// 0143    | OP_POP
+//           [ <script> ][ 2 ]
+// 0144    | OP_LOOP           144 -> 124
+//           [ <script> ][ 2 ]
+// 0124    | OP_GET_LOCAL        1
+//           [ <script> ][ 2 ][ 2 ]
+// 0126    | OP_CONSTANT        36 '3'
+//           [ <script> ][ 2 ][ 2 ][ 3 ]
+// 0128    | OP_LESS
+//           [ <script> ][ 2 ][ true ]
+// 0129    | OP_JUMP_IF_FALSE  129 -> 153
+//           [ <script> ][ 2 ][ true ]
+// 0132    | OP_POP
+//           [ <script> ][ 2 ]
+// 0133    | OP_JUMP           133 -> 147
+//           [ <script> ][ 2 ]
+// 0147   56 OP_GET_LOCAL        1
+//           [ <script> ][ 2 ][ 2 ]
+// 0149    | OP_PRINT
+// 2
+//           [ <script> ][ 2 ]
+// 0150   57 OP_LOOP           150 -> 136
+//           [ <script> ][ 2 ]
+// 0136    | OP_GET_LOCAL        1
+//           [ <script> ][ 2 ][ 2 ]
+// 0138    | OP_CONSTANT        37 '1'
+//           [ <script> ][ 2 ][ 2 ][ 1 ]
+// 0140    | OP_ADD
+//           [ <script> ][ 2 ][ 3 ]
+// 0141    | OP_SET_LOCAL        1
+//           [ <script> ][ 3 ][ 3 ]
+// 0143    | OP_POP
+//           [ <script> ][ 3 ]
+// 0144    | OP_LOOP           144 -> 124
+//           [ <script> ][ 3 ]
+// 0124    | OP_GET_LOCAL        1
+//           [ <script> ][ 3 ][ 3 ]
+// 0126    | OP_CONSTANT        36 '3'
+//           [ <script> ][ 3 ][ 3 ][ 3 ]
+// 0128    | OP_LESS
+//           [ <script> ][ 3 ][ false ]
+// 0129    | OP_JUMP_IF_FALSE  129 -> 153
+//           [ <script> ][ 3 ][ false ]
+// 0153    | OP_POP
+//           [ <script> ][ 3 ]
+// 0154    | OP_POP
+//           [ <script> ]
+// 0155   60 OP_CONSTANT        39 '3'
+//           [ <script> ][ 3 ]
+// 0157    | OP_DEFINE_GLOBAL   38 'count'
+//           [ <script> ]
+// 0159   61 OP_GET_GLOBAL      40 'count'
+//           [ <script> ][ 3 ]
+// 0161    | OP_CONSTANT        41 '0'
+//           [ <script> ][ 3 ][ 0 ]
+// 0163    | OP_GREATER
+//           [ <script> ][ true ]
+// 0164    | OP_JUMP_IF_FALSE  164 -> 182
+//           [ <script> ][ true ]
+// 0167    | OP_POP
+//           [ <script> ]
+// 0168   62 OP_GET_GLOBAL      42 'count'
+//           [ <script> ][ 3 ]
+// 0170    | OP_PRINT
+// 3
+//           [ <script> ]
+// 0171   63 OP_GET_GLOBAL      44 'count'
+//           [ <script> ][ 3 ]
+// 0173    | OP_CONSTANT        45 '1'
+//           [ <script> ][ 3 ][ 1 ]
+// 0175    | OP_SUBTRACT
+//           [ <script> ][ 2 ]
+// 0176    | OP_SET_GLOBAL      43 'count'
+//           [ <script> ][ 2 ]
+// 0178    | OP_POP
+//           [ <script> ]
+// 0179   64 OP_LOOP           179 -> 159
+//           [ <script> ]
+// 0159   61 OP_GET_GLOBAL      40 'count'
+//           [ <script> ][ 2 ]
+// 0161    | OP_CONSTANT        41 '0'
+//           [ <script> ][ 2 ][ 0 ]
+// 0163    | OP_GREATER
+//           [ <script> ][ true ]
+// 0164    | OP_JUMP_IF_FALSE  164 -> 182
+//           [ <script> ][ true ]
+// 0167    | OP_POP
+//           [ <script> ]
+// 0168   62 OP_GET_GLOBAL      42 'count'
+//           [ <script> ][ 2 ]
+// 0170    | OP_PRINT
+// 2
+//           [ <script> ]
+// 0171   63 OP_GET_GLOBAL      44 'count'
+//           [ <script> ][ 2 ]
+// 0173    | OP_CONSTANT        45 '1'
+//           [ <script> ][ 2 ][ 1 ]
+// 0175    | OP_SUBTRACT
+//           [ <script> ][ 1 ]
+// 0176    | OP_SET_GLOBAL      43 'count'
+//           [ <script> ][ 1 ]
+// 0178    | OP_POP
+//           [ <script> ]
+// 0179   64 OP_LOOP           179 -> 159
+//           [ <script> ]
+// 0159   61 OP_GET_GLOBAL      40 'count'
+//           [ <script> ][ 1 ]
+// 0161    | OP_CONSTANT        41 '0'
+//           [ <script> ][ 1 ][ 0 ]
+// 0163    | OP_GREATER
+//           [ <script> ][ true ]
+// 0164    | OP_JUMP_IF_FALSE  164 -> 182
+//           [ <script> ][ true ]
+// 0167    | OP_POP
+//           [ <script> ]
+// 0168   62 OP_GET_GLOBAL      42 'count'
+//           [ <script> ][ 1 ]
+// 0170    | OP_PRINT
+// 1
+//           [ <script> ]
+// 0171   63 OP_GET_GLOBAL      44 'count'
+//           [ <script> ][ 1 ]
+// 0173    | OP_CONSTANT        45 '1'
+//           [ <script> ][ 1 ][ 1 ]
+// 0175    | OP_SUBTRACT
+//           [ <script> ][ 0 ]
+// 0176    | OP_SET_GLOBAL      43 'count'
+//           [ <script> ][ 0 ]
+// 0178    | OP_POP
+//           [ <script> ]
+// 0179   64 OP_LOOP           179 -> 159
+//           [ <script> ]
+// 0159   61 OP_GET_GLOBAL      40 'count'
+//           [ <script> ][ 0 ]
+// 0161    | OP_CONSTANT        41 '0'
+//           [ <script> ][ 0 ][ 0 ]
+// 0163    | OP_GREATER
+//           [ <script> ][ false ]
+// 0164    | OP_JUMP_IF_FALSE  164 -> 182
+//           [ <script> ][ false ]
+// 0182    | OP_POP
+//           [ <script> ]
+// 0183   67 OP_CONSTANT        47 'Updated value'
+//           [ <script> ][ Updated value ]
+// 0185    | OP_SET_GLOBAL      46 'globalVar'
+//           [ <script> ][ Updated value ]
+// 0187    | OP_POP
+//           [ <script> ]
+// 0188   68 OP_GET_GLOBAL      48 'globalVar'
+//           [ <script> ][ Updated value ]
+// 0190    | OP_PRINT
+// Updated value
+//           [ <script> ]
+// 0191   69 OP_NIL
+//           [ <script> ][ nil ]
