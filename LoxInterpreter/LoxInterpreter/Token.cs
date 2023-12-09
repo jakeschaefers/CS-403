@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LoxInterpreter
 {
-    public class Token
+    class Token
     {
         public TokenType Type { get; }
         public string Lexeme { get; }
@@ -23,7 +23,7 @@ namespace LoxInterpreter
 
         public override string ToString()
         {
-            return Type + " " + Lexeme + " " + Literal;
+            return $"{Type} {Lexeme} {Literal}";
         }
     }
 

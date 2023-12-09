@@ -23,44 +23,23 @@ namespace LoxInterpreter
             values[name] = value;
         }
 
-        public Environment Ancestor(int distance)
-        {
-            Environment environment = this;
-            for (int i = 0; i < distance; i++)
-            {
-                environment = environment.enclosing;
-            }
-
-            return environment;
-        }
-
-        public object GetAt(int distance, string name)
-        {
-            return Ancestor(distance).values[name];
-        }
-
-        public void AssignAt(int distance, Token name, object value)
-        {
-            Ancestor(distance).values[name.lexeme] = value;
-        }
-
         public object Get(Token name)
         {
-            if (values.ContainsKey(name.lexeme))
+            if (values.ContainsKey(name.Lexeme))
             {
-                return values[name.lexeme];
+                return values[name.Lexeme];
             }
 
             if (enclosing != null) return enclosing.Get(name);
 
-            throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+            throw new RuntimeError(name, "Undefined variable '" + name.Lexeme + "'.");
         }
 
         public void Assign(Token name, object value)
         {
-            if (values.ContainsKey(name.lexeme))
+            if (values.ContainsKey(name.Lexeme))
             {
-                values[name.lexeme] = value;
+                values[name.Lexeme] = value;
                 return;
             }
 
@@ -70,7 +49,7 @@ namespace LoxInterpreter
                 return;
             }
 
-            throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+            throw new RuntimeError(name, "Undefined variable '" + name.Lexeme + "'.");
         }
     }
 }

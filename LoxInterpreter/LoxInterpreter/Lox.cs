@@ -6,21 +6,30 @@ using System.Text;
 
 namespace LoxInterpreter
 {
-    public class Lox
+    class Lox
     {
-        private static readonly Interpreter Interpreter = new Interpreter();
-
-        private static bool HadError = false;
-        private static bool HadRuntimeError = false;
+        private static bool hadError = false;
 
         static void Main(string[] args)
         {
+
+            // Expr expression = new Expr.Binary(
+            //     new Expr.Unary(
+            //         new Token(TokenType.MINUS, "-", null, 1),
+            //         new Expr.Literal(123)),
+            //     new Token(TokenType.STAR, "*", null, 1),
+            //     new Expr.Grouping(
+            //         new Expr.Literal(45.67)));
+
+            // AstPrinter printer = new AstPrinter();
+            // Console.WriteLine(printer.Print(expression));
+
             try
             {
                 if (args.Length > 1)
                 {
                     Console.WriteLine("Usage: jlox [script]");
-                    System.Environment.Exit(64);
+                    Environment.Exit(64);
                 }
                 else if (args.Length == 1)
                 {
@@ -42,9 +51,7 @@ namespace LoxInterpreter
             byte[] bytes = File.ReadAllBytes(path);
             Run(Encoding.Default.GetString(bytes));
 
-            if (HadError) System.Environment.Exit(65);
-            if (HadRuntimeError) System.Environment.Exit(70);
-
+            if (hadError) Environment.Exit(65);
         }
 
         private static void RunPrompt()
@@ -58,7 +65,7 @@ namespace LoxInterpreter
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
                 Run(line);
-                HadError = false;
+                hadError = false;
             }
         }
 
@@ -67,12 +74,12 @@ namespace LoxInterpreter
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.ScanTokens();
             Parser parser = new Parser(tokens);
-            List<Stmt> statements = parser.Parse();
+            Expr expression = parser.Parse();
 
             // Stop if there was a syntax error.
-            if (HadError) return;
+            if (hadError) return;
 
-            Interpreter.Interpret(statements);
+            Console.WriteLine(new AstPrinter().Print(expression));
         }
 
         public static void Error(int line, string message)
@@ -83,7 +90,7 @@ namespace LoxInterpreter
         private static void Report(int line, string where, string message)
         {
             Console.Error.WriteLine($"[line {line}] Error{where}: {message}");
-            HadError = true;
+            hadError = true;
         }
 
         public static void Error(Token token, string message)
@@ -97,11 +104,6 @@ namespace LoxInterpreter
                 Report(token.Line, " at '" + token.Lexeme + "'", message);
             }
         }
-
-        public static void RuntimeError(RuntimeError error)
-        {
-            Console.Error.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
-            HadRuntimeError = true;
-        }
     }
+
 }

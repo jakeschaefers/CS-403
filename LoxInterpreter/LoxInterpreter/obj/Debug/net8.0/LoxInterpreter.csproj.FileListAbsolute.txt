@@ -1,0 +1,14 @@
+D:\School\Computer Science 403\LoxInterpreter\bin\Debug\net8.0\LoxInterpreter.exe
+D:\School\Computer Science 403\LoxInterpreter\bin\Debug\net8.0\LoxInterpreter.deps.json
+D:\School\Computer Science 403\LoxInterpreter\bin\Debug\net8.0\LoxInterpreter.runtimeconfig.json
+D:\School\Computer Science 403\LoxInterpreter\bin\Debug\net8.0\LoxInterpreter.dll
+D:\School\Computer Science 403\LoxInterpreter\bin\Debug\net8.0\LoxInterpreter.pdb
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.GeneratedMSBuildEditorConfig.editorconfig
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.AssemblyInfoInputs.cache
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.AssemblyInfo.cs
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.csproj.CoreCompileInputs.cache
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.dll
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\refint\LoxInterpreter.dll
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.pdb
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\LoxInterpreter.genruntimeconfig.cache
+D:\School\Computer Science 403\LoxInterpreter\obj\Debug\net8.0\ref\LoxInterpreter.dll
